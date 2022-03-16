@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.Vector;
 
 public class Utils {
 
@@ -13,17 +14,24 @@ public class Utils {
         System.out.println(sb.toString());
     }
 
-    int calculateGoalFunction(ArrayList<Integer> solution, int[][] distances){
+
+    int calculateGoalFunction(ArrayList<Integer> solution, Vector<Vector<Integer>> distances){
+
 
         int result = 0;
 
         for(int i = 0; i < solution.size()-1; i++){
-            result += distances[solution.get(i)][solution.get(i+1)];
+
+            result += distances.get(solution.get(i)).get(solution.get(i+1));
         }
 
         return result;
     }
-    float calculatePRD(ArrayList<Integer> optimalSolution, ArrayList<Integer> solution, int[][] distances){
+
+    float calculatePRD(ArrayList<Integer> optimalSolution, ArrayList<Integer> solution, Vector<Vector<Integer>> distances){
+
+    {
+
 
         return  (float) (calculateGoalFunction(solution, distances) - calculateGoalFunction(optimalSolution, distances))
                 *100 / calculateGoalFunction(optimalSolution, distances);

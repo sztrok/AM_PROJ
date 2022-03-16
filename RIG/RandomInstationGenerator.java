@@ -1,5 +1,6 @@
 import java.util.ArrayList;
 import java.util.Random;
+import java.util.Vector;
 
 public class RandomInstationGenerator {
 
@@ -10,43 +11,51 @@ public class RandomInstationGenerator {
         rand = new Random();
     }
     //n - size
-    public int[][] getAsymmetric(int n){
+    public Vector<Vector<Integer>> getAsymmetric(int n){
 
-        int[][] matrix = new int [n][n];
+//        int[][] matrix = new int [n][n];
+        Vector<Vector<Integer>> matrix = new Vector<>();
+
         for(int i=0; i<n; i++){
+            Vector<Integer> vector = new Vector<>();
             for(int j = 0; j<n; j++){
 
                 if(i ==j){
-                    matrix[i][j] = 0;
+                    vector.add(0);
                 }else {
-                    matrix[i][j] = rand.nextInt();
+                    vector.add(rand.nextInt());
                 }
             }
+
+            matrix.add(vector);
         }
         return  matrix;
     }
 
-    public int[][] getSymmetric(int n){
-        int[][] matrix = new int[n][n];
+    public Vector<Vector<Integer>> getSymmetric(int n){
+//        int[][] matrix = new int[n][n];
+
+        Vector<Vector<Integer>> matrix = new Vector<>();
         for(int i=0; i<n; i++){
-            matrix[i][i] = 0;
+            Vector<Integer> vector = new Vector<>();
             for(int j = 0; j <= i; j++){
                 if(i == j){
-                    matrix[i][j] =0;
+                    vector.add(0);
                 }else {
-                    matrix[i][j] = rand.nextInt();
-                    matrix[j][i] = matrix[i][j];
+                    vector.add( rand.nextInt());
+
                 }
             }
+            matrix.add(vector);
         }
         return  matrix;
     }
 
-    public int[][] getEuclidean(int n){
+    public Vector<Vector<Integer>> getEuclidean(int n){
 
         ArrayList<int []> points = new ArrayList<>();
 
-        int[][] matrix = new int[n][n];
+        Vector<Vector<Integer>> matrix = new Vector<>();
 
         for(int i =0; i <n; i++){
             int[] coordinates = new int[2];
@@ -54,20 +63,29 @@ public class RandomInstationGenerator {
             coordinates[1] = rand.nextInt();
             points.add(coordinates);
 
-            matrix[i][i] = 0;
+
         }
 
-        for(int i = 0; i < n; i++){
-            for(int j = i+1; j < n; j++){
+        for(int i = 0; i < n; i++) {
+            Vector<Integer> vector = new Vector<>();
 
-                int[] point1 = points.get(i);
-                int[] point2 = points.get(j);
+            for (int j = 0; j <= i; j++) {
 
-                int distance = (int) Math.sqrt(Math.pow((point1[0] -point2[0]),2) + Math.pow(point1[1] - point2[1],2));
-                matrix[i][j] = distance;
-                matrix[j][i] = distance;
+                if (i == j) {
+                    vector.add(0);
+                } else {
+
+                    int[] point1 = points.get(i);
+                    int[] point2 = points.get(j);
+
+
+                    int distance = (int) Math.sqrt(Math.pow((point1[0] - point2[0]), 2) + Math.pow(point1[1] - point2[1], 2));
+                    vector.add(distance);
+
+                }
             }
+            matrix.add(vector);
         }
-        return  matrix;
+        return matrix;
     }
 }
