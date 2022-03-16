@@ -14,7 +14,9 @@ public class Utils {
         System.out.println(sb.toString());
     }
 
+
     int calculateGoalFunction(ArrayList<Integer> solution, Vector<Vector<Integer>> distances){
+
 
         int result = 0;
 
@@ -25,7 +27,11 @@ public class Utils {
 
         return result;
     }
+
     float calculatePRD(ArrayList<Integer> optimalSolution, ArrayList<Integer> solution, Vector<Vector<Integer>> distances){
+
+    {
+
 
         return  (float) (calculateGoalFunction(solution, distances) - calculateGoalFunction(optimalSolution, distances))
                 *100 / calculateGoalFunction(optimalSolution, distances);
