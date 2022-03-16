@@ -13,7 +13,7 @@ public class Utils {
         System.out.println(sb.toString());
     }
 
-    int getGoalFunction(ArrayList<Integer> solution, int[][] distances){
+    int calculateGoalFunction(ArrayList<Integer> solution, int[][] distances){
 
         int result = 0;
 
@@ -22,5 +22,11 @@ public class Utils {
         }
 
         return result;
+    }
+    float calculatePRD(ArrayList<Integer> optimalSolution, ArrayList<Integer> solution, int[][] distances){
+
+        return  (float) (calculateGoalFunction(solution, distances) - calculateGoalFunction(optimalSolution, distances))
+                *100 / calculateGoalFunction(optimalSolution, distances);
+
     }
 }
