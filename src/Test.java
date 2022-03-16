@@ -7,8 +7,8 @@ public class Test {
 
 
     public static void main(String[] args){
-//        LoadDataTSP.loadData("gr120.tsp");
-//        System.out.println(LoadDataTSP.matrix);
+        LoadDataTSP.loadData("fri26.tsp");
+        System.out.println(LoadDataTSP.matrix);
 
 
     }
