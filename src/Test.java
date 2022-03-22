@@ -11,6 +11,7 @@ public class Test {
         System.out.println(LoadDataTSP.matrix);
 
 
+
     }
 
 }
