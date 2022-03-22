@@ -1,5 +1,3 @@
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Vector;
 
 public class Main {
@@ -7,22 +5,27 @@ public class Main {
 
 
 
+        LoadDataTSP.loadData("fri26.tsp");
+
         RandomInstationGenerator randomInstationGenerator = new RandomInstationGenerator();
 
-        Vector<Vector<Integer>> v = randomInstationGenerator.getEuclidean(3);
-        for(Vector<Integer> s :v){
+        Vector<Vector<Integer>> v =  randomInstationGenerator.getSymmetric(5);
+//        for(Vector<Integer> s : v){
+//            System.out.println(s);
+//        }
+//
+        for(Vector<Integer> s :LoadDataTSP.matrix){
             System.out.println(s);
         }
 
+        Vector<Integer> y = ClosestNeighbour.solveExtended();
 
-        Utils u  = new Utils();
+
+        System.out.println(Utils.calculateGoalFunction(y));
+
+        Vector<Integer> x = TwoOpt.solve();
+        System.out.println(Utils.calculateGoalFunction(x));
 
 
-        ArrayList<Integer> x = new ArrayList<>();
-        x.add(10);
-        x.add(12);
-        x.add(11);
-        x.add(1);
-        u.printSolution(x);
     }
 }

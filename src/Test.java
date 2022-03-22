@@ -10,8 +10,8 @@ public class Test {
         LoadDataTSP.loadData("fri26.tsp");
         System.out.println(LoadDataTSP.matrix);
 
-        System.out.println("--------------");
-        Algorithms.kRandom(5);
+
+
     }
 
 }
