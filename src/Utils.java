@@ -28,7 +28,14 @@ public class Utils {
             }
             else
                 result += LoadDataTSP.matrix.get(y).get(x);
-            }
+        }
+        int last = solution.lastElement();
+        int first = solution.firstElement();
+        if(last > first){
+            result+=LoadDataTSP.matrix.get(last).get(first);
+        }
+        else result+=LoadDataTSP.matrix.get(first).get(last);
+
 
         return result;
     }
