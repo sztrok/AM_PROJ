@@ -1,3 +1,4 @@
+import javax.xml.crypto.Data;
 import java.util.ArrayList;
 import java.util.Vector;
 
@@ -23,18 +24,23 @@ public class Utils {
             int x = solution.get(i);
             int y = solution.get(i+1);
 
-            if(x > y) {
-                result += LoadDataTSP.matrix.get(x).get(y);
+            if(DataMatrix.type.equals("FULL_MATRIX")){
+                result += DataMatrix.matrix.get(x).get(y);
             }
-            else
-                result += LoadDataTSP.matrix.get(y).get(x);
+            else{
+                if(x > y) {
+                    result += DataMatrix.matrix.get(x).get(y);
+                }
+                else
+                    result += DataMatrix.matrix.get(y).get(x);
+            }
         }
         int last = solution.lastElement();
         int first = solution.firstElement();
         if(last > first){
-            result+=LoadDataTSP.matrix.get(last).get(first);
+            result+=DataMatrix.matrix.get(last).get(first);
         }
-        else result+=LoadDataTSP.matrix.get(first).get(last);
+        else result+=DataMatrix.matrix.get(first).get(last);
 
 
         return result;

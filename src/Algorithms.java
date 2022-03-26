@@ -4,12 +4,11 @@ import java.util.Vector;
 public class Algorithms {
 
 
-
     public static Vector<Vector<Integer>> kRandom(int k){
-        Vector<Vector<Integer>> matrix = LoadDataTSP.matrix;
-        int dimension = LoadDataTSP.dimension;
-        String format = LoadDataTSP.format;
-        String type = LoadDataTSP.type;
+        Vector<Vector<Integer>> matrix = DataMatrix.matrix;
+        int dimension = DataMatrix.dimension;
+        String format = DataMatrix.format;
+        String type = DataMatrix.type;
 
         Vector<Vector<Integer>> permutations = new Vector<>();
 
@@ -33,7 +32,6 @@ public class Algorithms {
     }
 
 
-
     public static Vector<Integer> closestNeighbour(int startNode){
 
         Vector<Integer> visited = new Vector<>();
@@ -43,12 +41,12 @@ public class Algorithms {
 
         visited.add(currentNode);
 
-        while(visited.size() != LoadDataTSP.dimension) {
+        while(visited.size() != DataMatrix.dimension) {
 
             int min = Integer.MAX_VALUE;
 
-            for(int i : LoadDataTSP.matrix.get(currentNode)) {
-                int possibleNeighbour = LoadDataTSP.matrix.get(currentNode).indexOf(i);
+            for(int i : DataMatrix.matrix.get(currentNode)) {
+                int possibleNeighbour = DataMatrix.matrix.get(currentNode).indexOf(i);
 
 
                 if (possibleNeighbour != currentNode && i < min &&
@@ -58,12 +56,12 @@ public class Algorithms {
                 }
             }
 
-            for (int i = currentNode + 1; i < LoadDataTSP.dimension; i++) {
+            for (int i = currentNode + 1; i < DataMatrix.dimension; i++) {
 
-                if (min > LoadDataTSP.matrix.get(i).get(currentNode) &&
+                if (min > DataMatrix.matrix.get(i).get(currentNode) &&
                         !visited.contains(i)) {
 
-                    min = LoadDataTSP.matrix.get(i).get(currentNode);
+                    min = DataMatrix.matrix.get(i).get(currentNode);
                     neighbour = i;
                 }
             }
@@ -78,7 +76,7 @@ public class Algorithms {
         Vector<Integer> result = new Vector<>();
         long smallestGoalFunctionValue = Long.MAX_VALUE ;
 
-        for(int i =0 ; i < LoadDataTSP.dimension; i++){
+        for(int i =0 ; i < DataMatrix.dimension; i++){
 
             Vector<Integer> possibleResult = closestNeighbour(i);
             long goalFunctionValue = Utils.calculateGoalFunction(possibleResult);
@@ -106,8 +104,8 @@ public class Algorithms {
             currentGFValue = Utils.calculateGoalFunction(solution);
             currentSolution = solution;
 
-            for(int i =0; i < LoadDataTSP.dimension; i++){
-                for(int j = i + 1; j < LoadDataTSP.dimension; j++){
+            for(int i =0; i < DataMatrix.dimension; i++){
+                for(int j = i + 1; j < DataMatrix.dimension; j++){
                     for(int k =0; k < (j-i)/2 + 1 ; k++){
 
                         tempSolution = new Vector<>(currentSolution);

@@ -4,14 +4,11 @@ import java.util.Vector;
 
 public class RandomInstationGenerator {
 
-    Random rand;
+    static Random rand = new Random();
 
-    public RandomInstationGenerator(){
 
-        rand = new Random();
-    }
     //n - size
-    public Vector<Vector<Integer>> getAsymmetric(int n){
+    public static Vector<Vector<Integer>> getAsymmetric(int n){
 
 //        int[][] matrix = new int [n][n];
         Vector<Vector<Integer>> matrix = new Vector<>();
@@ -23,7 +20,7 @@ public class RandomInstationGenerator {
                 if(i ==j){
                     vector.add(0);
                 }else {
-                    vector.add(rand.nextInt());
+                    vector.add(Math.abs(rand.nextInt()));
                 }
             }
 
@@ -32,7 +29,7 @@ public class RandomInstationGenerator {
         return  matrix;
     }
 
-    public Vector<Vector<Integer>> getSymmetric(int n){
+    public static Vector<Vector<Integer>> getSymmetric(int n){
 //        int[][] matrix = new int[n][n];
 
         Vector<Vector<Integer>> matrix = new Vector<>();
@@ -42,7 +39,7 @@ public class RandomInstationGenerator {
                 if(i == j){
                     vector.add(0);
                 }else {
-                    vector.add( rand.nextInt());
+                    vector.add( Math.abs(rand.nextInt()));
 
                 }
             }
@@ -51,7 +48,7 @@ public class RandomInstationGenerator {
         return  matrix;
     }
 
-    public Vector<Vector<Integer>> getEuclidean(int n){
+    public static Vector<Vector<Integer>> getEuclidean(int n){
 
         ArrayList<int []> points = new ArrayList<>();
 
@@ -59,8 +56,8 @@ public class RandomInstationGenerator {
 
         for(int i =0; i <n; i++){
             int[] coordinates = new int[2];
-            coordinates[0] = rand.nextInt();
-            coordinates[1] = rand.nextInt();
+            coordinates[0] = Math.abs(rand.nextInt());
+            coordinates[1] = Math.abs(rand.nextInt());
             points.add(coordinates);
 
 
