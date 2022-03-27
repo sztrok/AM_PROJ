@@ -20,7 +20,7 @@ public class RandomInstationGenerator {
                 if(i ==j){
                     vector.add(0);
                 }else {
-                    vector.add(Math.abs(rand.nextInt()));
+                    vector.add(Math.abs(rand.nextInt()%500 + 100));
                 }
             }
 
@@ -39,7 +39,7 @@ public class RandomInstationGenerator {
                 if(i == j){
                     vector.add(0);
                 }else {
-                    vector.add( Math.abs(rand.nextInt()));
+                    vector.add( Math.abs(rand.nextInt()%500 + 100));
 
                 }
             }
@@ -56,8 +56,8 @@ public class RandomInstationGenerator {
 
         for(int i =0; i <n; i++){
             int[] coordinates = new int[2];
-            coordinates[0] = Math.abs(rand.nextInt());
-            coordinates[1] = Math.abs(rand.nextInt());
+            coordinates[0] = Math.abs(rand.nextInt()%500 + 100);
+            coordinates[1] = Math.abs(rand.nextInt()%500 + 100);
             points.add(coordinates);
 
 
