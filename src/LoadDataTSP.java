@@ -6,7 +6,7 @@ public class LoadDataTSP {
 
     private static String path="";
     public static Vector<Vector<Integer>> matrix = new Vector<>();
-    private static final Vector<Vector<Double>> euclides = new Vector<>();
+    private static Vector<Vector<Double>> euclides = new Vector<>();
 
     public static int dimension=0;
     public static String format = "";
@@ -132,6 +132,15 @@ public class LoadDataTSP {
 
     private static double calcDistances(double v1, double v2){
         return  Math.pow(v1-v2,2);
+    }
+
+    public static void resetData(){
+        path="";
+        matrix = new Vector<>();
+        euclides = new Vector<>();
+        dimension=0;
+        format = "";
+        type = "";
     }
 
 }

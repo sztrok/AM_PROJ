@@ -1,14 +1,14 @@
+import javax.xml.crypto.Data;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.Vector;
 
-public class TestSymRand {
+public class TestTSP {
 
-    public static void generateData(int repeats) throws IOException {
-        FileWriter newFile = new FileWriter("test_sym_rand.txt");
+    public static void generateData() throws IOException{
+        FileWriter newFile = new FileWriter("test_TSPLIB.txt");
         Vector<Vector<Integer>> matrix;
-
 
         Vector<Long> prdData;
 
@@ -21,18 +21,34 @@ public class TestSymRand {
         double time;
         String data;
 
+        String[] fileNames = {"bays29.tsp","berlin52.tsp","br17.atsp","dantzig42.tsp","fri26.tsp","ft70.atsp","gr17.tsp","gr21.tsp","gr24.tsp",
+        "gr48.tsp","hk48.tsp","pr76.tsp","kroA100.tsp","kroB100.tsp","kroC100.tsp","kroD100.tsp","ch130.tsp","ch150.tsp","eil101.tsp"};
 
-        for(int i=15; i<50; i++){
-            for(int k=0; k<repeats; k++){
-                data = "";
+//        for(String name: fileNames) System.out.println(name);
+        for(String file:fileNames){
+            System.out.println("-------------------");
+            System.out.println(file);
+            LoadDataTSP.loadData(file);
+            LoadDataTSP.resetData();
+        }
+
+
+//        LoadDataTSP.loadData(fileNames[0]);
+//        LoadDataTSP.loadData(fileNames[1]);
+//        LoadDataTSP.resetData();
+//        LoadDataTSP.loadData(fileNames[2]);
+
+        for(String file:fileNames){
+            LoadDataTSP.loadData(file);
+            DataMatrix.matrix = LoadDataTSP.matrix;
+            DataMatrix.dimension = LoadDataTSP.dimension;
+            DataMatrix.format = LoadDataTSP.format;
+            DataMatrix.type = LoadDataTSP.type;
+
+            for(int r=0; r<50; r++){
+
                 prdData = new Vector<>();
-
-                matrix = RandomInstationGenerator.getSymmetric(i);
-                DataMatrix.matrix = matrix;
-                DataMatrix.dimension = i;
-                DataMatrix.format = "LOWER_DIAG_ROW";
-                DataMatrix.type = "EXPLICIT";
-
+                data = "";
 
                 start = System.nanoTime();
                 result0 = Algorithms.extendedClosestNeighbour();
@@ -41,7 +57,7 @@ public class TestSymRand {
 
                 prdData.add(Utils.calculateGoalFunction(result0));
 
-                data+=i;
+                data+=DataMatrix.dimension;
                 data+=";";
                 data+=time;
 
@@ -100,9 +116,9 @@ public class TestSymRand {
                 newFile.write("\n");
             }
 
+
+            LoadDataTSP.resetData();
         }
         newFile.close();
-
     }
-
 }

@@ -91,10 +91,11 @@ public class Test {
 //            System.out.println("eeor");
 //        }
 
-        TestSymRand.generateData(20);
-        TestAsymRand.generateData(20);
-        TestEucRand.generateData(20);
+        TestSymRand.generateData(50);
+        TestAsymRand.generateData(50);
+        TestEucRand.generateData(50);
 
+        TestTSP.generateData();
 
 //        int k = 20;
 //        Vector<Vector<Integer>> matrix = Algorithms.kRandom(k);
