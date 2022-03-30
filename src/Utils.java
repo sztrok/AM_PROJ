@@ -1,8 +1,12 @@
 import javax.xml.crypto.Data;
 import java.util.ArrayList;
+import java.util.Random;
 import java.util.Vector;
 
 public class Utils {
+
+
+    static Random rand = new Random();
 
     public static void printSolution(ArrayList<Integer> solution){
 
@@ -35,6 +39,7 @@ public class Utils {
                     result += DataMatrix.matrix.get(y).get(x);
             }
         }
+
         int last = solution.lastElement();
         int first = solution.firstElement();
         if(last > first){
@@ -51,4 +56,5 @@ public class Utils {
                 *100 / calculateGoalFunction(optimalSolution);
 
     }
+
 }

@@ -3,11 +3,14 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.Vector;
+import java.util.zip.DataFormatException;
 
 public class TestTSP {
 
     public static void generateData() throws IOException{
-        FileWriter newFile = new FileWriter("test_TSPLIB.txt");
+        FileWriter asymFile = new FileWriter("test_asym_TSPLIB.txt");
+        FileWriter symFile = new FileWriter("test_sym_TSPLIB.txt");
+        FileWriter eucFile = new FileWriter("test_euc_TSPLIB.txt");
         Vector<Vector<Integer>> matrix;
 
         Vector<Long> prdData;
@@ -45,7 +48,18 @@ public class TestTSP {
             DataMatrix.format = LoadDataTSP.format;
             DataMatrix.type = LoadDataTSP.type;
 
-            for(int r=0; r<50; r++){
+
+            long totalTimeCN = 0;
+            long totalTimeCNE = 0;
+            long totalTime2Opt = 0;
+
+            float totalPrdCN =0.0f;
+            float totalPrdCNE =0.0f;
+            float totalPrd2Opt =0.0f;
+
+            int repeats = 50;
+            for(int r=0; r < repeats; r++){
+
 
                 prdData = new Vector<>();
                 data = "";
@@ -54,6 +68,8 @@ public class TestTSP {
                 result0 = Algorithms.extendedClosestNeighbour();
                 end = System.nanoTime();
                 time = end - start;
+
+                totalTimeCNE += time;
 
                 prdData.add(Utils.calculateGoalFunction(result0));
 
@@ -64,9 +80,11 @@ public class TestTSP {
 
 
                 start = System.nanoTime();
-                result1 = Algorithms.twoOpt();
+                result1 = Algorithms.twoOpt("CNE");
                 end = System.nanoTime();
                 time = end - start;
+
+                totalTime2Opt += time;
 
                 prdData.add(Utils.calculateGoalFunction(result1));
 
@@ -79,6 +97,8 @@ public class TestTSP {
                 result2 = Algorithms.closestNeighbour(10);
                 end = System.nanoTime();
                 time = end - start;
+
+                totalTimeCN += time;
 
                 prdData.add(Utils.calculateGoalFunction(result2));
 
@@ -111,14 +131,32 @@ public class TestTSP {
                 data+=";";
                 data+=prd2;
 
-                newFile.write(data);
 
-                newFile.write("\n");
+                totalPrdCNE += prd0;
+                totalPrd2Opt += prd1;
+                totalPrdCN += prd2;
+//                newFile.write(data);
+//
+//                newFile.write("\n");
             }
 
 
+            FileWriter newFile = switch (DataMatrix.format){
+
+                case "FULL_MATRIX" -> asymFile;
+                case "LOWER_DIAG_ROW" -> symFile;
+                default -> eucFile;
+            };
+            data = "";
+            data += DataMatrix.dimension +";" +totalTimeCNE/repeats + ";" + totalTime2Opt/repeats + ";" +totalTimeCN/repeats +';' +totalPrdCNE/repeats+ ";" +
+                    totalPrd2Opt/repeats +";" + totalPrdCN/repeats;
+            newFile.write(data);
+            newFile.write("\n");
+
             LoadDataTSP.resetData();
         }
-        newFile.close();
+        asymFile.close();
+        symFile.close();
+        eucFile.close();
     }
 }

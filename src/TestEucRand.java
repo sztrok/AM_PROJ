@@ -23,6 +23,15 @@ public class TestEucRand {
 
 
         for(int i=15; i<50; i++){
+
+
+            long totalTimeCN = 0;
+            long totalTimeCNE = 0;
+            long totalTime2Opt = 0;
+
+            float totalPrdCN =0.0f;
+            float totalPrdCNE =0.0f;
+            float totalPrd2Opt =0.0f;
             for(int k=0; k<repeats; k++){
                 data = "";
                 prdData = new Vector<>();
@@ -39,6 +48,8 @@ public class TestEucRand {
                 end = System.nanoTime();
                 time = end - start;
 
+                totalTimeCNE += time;
+
                 prdData.add(Utils.calculateGoalFunction(result0));
 
                 data+=i;
@@ -48,9 +59,11 @@ public class TestEucRand {
 
 
                 start = System.nanoTime();
-                result1 = Algorithms.twoOpt();
+                result1 = Algorithms.twoOpt("CNE");
                 end = System.nanoTime();
                 time = end - start;
+
+                totalTime2Opt += time;
 
                 prdData.add(Utils.calculateGoalFunction(result1));
 
@@ -63,6 +76,8 @@ public class TestEucRand {
                 result2 = Algorithms.closestNeighbour(10);
                 end = System.nanoTime();
                 time = end - start;
+
+                totalTimeCN += time;
 
                 prdData.add(Utils.calculateGoalFunction(result2));
 
@@ -95,11 +110,19 @@ public class TestEucRand {
                 data+=";";
                 data+=prd2;
 
-                newFile.write(data);
+                totalPrdCNE += prd0;
+                totalPrd2Opt += prd1;
+                totalPrdCN += prd2;
 
-                newFile.write("\n");
+//                newFile.write(data);
+//
+//                newFile.write("\n");
             }
-
+            data = "";
+            data += i +";" +totalTimeCNE/repeats + ";" + totalTime2Opt/repeats + ";" +totalTimeCN/repeats +';' +totalPrdCNE/repeats+ ";" +
+                    totalPrd2Opt/repeats +";" + totalPrdCN/repeats;
+            newFile.write(data);
+            newFile.write("\n");
         }
         newFile.close();
 

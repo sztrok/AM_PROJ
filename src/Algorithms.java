@@ -4,27 +4,35 @@ import java.util.Vector;
 public class Algorithms {
 
 
-    public static Vector<Vector<Integer>> kRandom(int k){
+    public static Vector<Integer> kRandom(int k){
         Vector<Vector<Integer>> matrix = DataMatrix.matrix;
         int dimension = DataMatrix.dimension;
         String format = DataMatrix.format;
         String type = DataMatrix.type;
 
-        Vector<Vector<Integer>> permutations = new Vector<>();
+        Vector<Integer> result = new Vector<>();
+        for(int j=0; j<dimension; j++){
+            result.add(j);
+        }
+        Collections.shuffle(result);
+
 
         for(int i=0; i<k; i++){
+
             Vector<Integer> dimVector = new Vector<>();
             for(int j=0; j<dimension; j++){
                 dimVector.add(j);
             }
             Collections.shuffle(dimVector);
-            permutations.add(dimVector);
+
+            if(Utils.calculateGoalFunction(dimVector) < Utils.calculateGoalFunction(result)) {
+
+                result = dimVector;
+            }
 //            System.out.println(dimVector);
 //            System.out.println(permutations);
         }
-
-        return permutations;
-
+        return result;
 //        Utils.calculateGoalFunction(permutations);
 //        System.out.println(permutations.get(0).indexOf(5));
 //        System.out.println(Collections.max(permutations));
@@ -86,23 +94,35 @@ public class Algorithms {
                 smallestGoalFunctionValue = goalFunctionValue;
             }
         }
+
         return result;
+
     }
 
-    public static  Vector<Integer> twoOpt(){
+
+    public static  Vector<Integer> twoOpt(String basicSolution){
+
+
+        Vector<Integer> solution = switch (basicSolution) {
+            case "KRand" -> kRandom(1000);
+            case "CN" -> closestNeighbour(Utils.rand.nextInt(DataMatrix.dimension));
+            case "CNE" -> extendedClosestNeighbour();
+            default ->  null;
+        };
 
         //GF = Goal Function
-        Vector<Integer> solution = extendedClosestNeighbour();
+
         Vector<Integer> currentSolution;
         Vector<Integer> tempSolution;
 
         long currentGFValue = Utils.calculateGoalFunction(solution);
-        long smallestGFValue = Long.MAX_VALUE;
+        long smallestGFValue = 0;
 
-        while(currentGFValue < smallestGFValue){
+        while(smallestGFValue < currentGFValue){
 
             currentGFValue = Utils.calculateGoalFunction(solution);
             currentSolution = solution;
+            smallestGFValue = currentGFValue;
 
             for(int i =0; i < DataMatrix.dimension; i++){
                 for(int j = i + 1; j < DataMatrix.dimension; j++){
@@ -115,6 +135,7 @@ public class Algorithms {
                         tempSolution.set(j - k, temp);
 
                         long possibleGFValue = Utils.calculateGoalFunction(tempSolution);
+
 
                         if(possibleGFValue < smallestGFValue){
                             smallestGFValue = possibleGFValue;
