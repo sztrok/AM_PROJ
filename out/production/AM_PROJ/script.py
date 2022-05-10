@@ -200,6 +200,6 @@ def algorithmsBenchmark():
 
 
 
-# twoOptPlot()
+twoOptPlot()
 # kRandomPlot()
-algorithmsBenchmark()
+# algorithmsBenchmark()

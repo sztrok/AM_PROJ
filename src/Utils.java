@@ -57,4 +57,11 @@ public class Utils {
 
     }
 
+
+    public static float calculatePRD(int optimalSolution, Vector<Integer> solution){
+
+        return  (float) (calculateGoalFunction(solution) - (optimalSolution))
+                *100 / (optimalSolution);
+
+    }
 }

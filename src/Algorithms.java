@@ -83,7 +83,6 @@ public class Algorithms {
 
         Vector<Integer> result = new Vector<>();
         long smallestGoalFunctionValue = Long.MAX_VALUE ;
-
         for(int i =0 ; i < DataMatrix.dimension; i++){
 
             Vector<Integer> possibleResult = closestNeighbour(i);
