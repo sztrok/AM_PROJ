@@ -64,4 +64,55 @@ public class Utils {
                 *100 / (optimalSolution);
 
     }
+
+
+
+    public static Vector<Integer> invert(Vector<Integer> solution, int i, int j){
+        Vector<Integer> tempSolution = new Vector<>(solution);
+
+
+        for(int k =0; k < (j-i)/2 + 1 ; k++){
+
+            int temp = tempSolution.get(i + k);
+            tempSolution.set(i + k, tempSolution.get(j - k));
+            tempSolution.set(j - k, temp);
+        }
+        return  tempSolution;
+    }
+
+    public static Vector<Integer> swap(Vector<Integer> solution, int i, int j){
+
+
+
+        Vector<Integer> tempSolution = new Vector<>(solution);
+
+        int temp = tempSolution.get(i);
+        tempSolution.set(i,tempSolution.get(j));
+        tempSolution.set(j,temp);
+
+
+        return  tempSolution;
+    }
+
+    public static Vector<Vector<Integer>> generateEnvironment(int number){
+
+        Vector<Vector<Integer>> env = new Vector<>();
+
+        for(int i = 0; i < number; i++){
+
+            int x = rand.nextInt(DataMatrix.dimension);
+            int y = rand.nextInt(DataMatrix.dimension);
+            Vector<Integer> temp = new Vector<>();
+            if(x < y){
+                temp.add(x);
+                temp.add(y);
+            }else{
+                temp.add(y);
+                temp.add(x);
+            }
+            env.add(temp);
+        }
+        return env;
+    }
+
 }

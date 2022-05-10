@@ -2,6 +2,7 @@ import javax.xml.crypto.Data;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.sql.SQLOutput;
 import java.util.Arrays;
 import java.util.Scanner;
 import java.util.Vector;
@@ -108,44 +109,49 @@ public class Test {
 
 
 
-        Vector<Vector<Integer>> x =RandomInstationGenerator.getEuclidean(15);
-        for(Vector<Integer> i: x){
-            System.out.println(i);
-        }
+//        Vector<Vector<Integer>> x =RandomInstationGenerator.getEuclidean(15);
+//        for(Vector<Integer> i: x){
+//            System.out.println(i);
+//        }
+//
+//        LoadDataTSP.loadData("gr120.tsp");
+//        DataMatrix.format = LoadDataTSP.format;
+//        DataMatrix.matrix = LoadDataTSP.matrix;
+//        DataMatrix.type = LoadDataTSP.type;
+//        DataMatrix.dimension = LoadDataTSP.dimension;
+//        Vector<Integer> result1 = Algorithms.kRandom(10);
+//        Vector<Integer> result2 = Algorithms.kRandom(1000);
+//        Vector<Integer> result3 = Algorithms.kRandom(10000);
+//        Vector<Integer> result4 = Algorithms.closestNeighbour(Utils.rand.nextInt(LoadDataTSP.dimension));
+//        Vector<Integer> result5 = Algorithms.extendedClosestNeighbour();
+//        Vector<Integer> result6 = Algorithms.twoOpt("KRand");
+//        Vector<Integer> result7 = Algorithms.twoOpt("CNE");
+//        Vector<Integer> result8 = Algorithms.twoOpt("CN");
+//
+//
+//        System.out.println("krand 10 " + result1 + "\n" + Utils.calculateGoalFunction(result1) + " " + Utils.calculatePRD(6942, result1));
+//        System.out.println("krand 1000 " + result2 + "\n" + Utils.calculateGoalFunction(result2)+ " " + Utils.calculatePRD(6942, result2));
+//        System.out.println("krand 100000 " + result3 + "\n" + Utils.calculateGoalFunction(result3)+ " " + Utils.calculatePRD(6942, result3));
+//        System.out.println("CN " + result4 + "\n" + Utils.calculateGoalFunction(result4)+ " " + Utils.calculatePRD(6942, result4));
+//        System.out.println("CNE " + result5 + "\n" + Utils.calculateGoalFunction(result5)+ " " + Utils.calculatePRD(6942, result5));
+//        System.out.println("2opt - krand " + result6 + "\n" + Utils.calculateGoalFunction(result6)+ " " + Utils.calculatePRD(6942, result6));
+//        System.out.println("2opt - CNE " + result7 + "\n" + Utils.calculateGoalFunction(result7)+ " " + Utils.calculatePRD(6942, result7));
+//        System.out.println("2opt - CN " + result8 + "\n" + Utils.calculateGoalFunction(result8)+ " " + Utils.calculatePRD(6942, result8));
+//
+//
+//
 
-        LoadDataTSP.loadData("gr120.tsp");
+//        Algorithms.twoOpt("CN");
+
+        LoadDataTSP.loadData("berlin52.tsp");
         DataMatrix.format = LoadDataTSP.format;
         DataMatrix.matrix = LoadDataTSP.matrix;
         DataMatrix.type = LoadDataTSP.type;
         DataMatrix.dimension = LoadDataTSP.dimension;
-        Vector<Integer> result1 = Algorithms.kRandom(10);
-        Vector<Integer> result2 = Algorithms.kRandom(1000);
-        Vector<Integer> result3 = Algorithms.kRandom(10000);
-        Vector<Integer> result4 = Algorithms.closestNeighbour(Utils.rand.nextInt(LoadDataTSP.dimension));
-        Vector<Integer> result5 = Algorithms.extendedClosestNeighbour();
-        Vector<Integer> result6 = Algorithms.twoOpt("KRand");
-        Vector<Integer> result7 = Algorithms.twoOpt("CNE");
-        Vector<Integer> result8 = Algorithms.twoOpt("CN");
 
-
-        System.out.println("krand 10 " + result1 + "\n" + Utils.calculateGoalFunction(result1) + " " + Utils.calculatePRD(6942, result1));
-        System.out.println("krand 1000 " + result2 + "\n" + Utils.calculateGoalFunction(result2)+ " " + Utils.calculatePRD(6942, result2));
-        System.out.println("krand 100000 " + result3 + "\n" + Utils.calculateGoalFunction(result3)+ " " + Utils.calculatePRD(6942, result3));
-        System.out.println("CN " + result4 + "\n" + Utils.calculateGoalFunction(result4)+ " " + Utils.calculatePRD(6942, result4));
-        System.out.println("CNE " + result5 + "\n" + Utils.calculateGoalFunction(result5)+ " " + Utils.calculatePRD(6942, result5));
-        System.out.println("2opt - krand " + result6 + "\n" + Utils.calculateGoalFunction(result6)+ " " + Utils.calculatePRD(6942, result6));
-        System.out.println("2opt - CNE " + result7 + "\n" + Utils.calculateGoalFunction(result7)+ " " + Utils.calculatePRD(6942, result7));
-        System.out.println("2opt - CN " + result8 + "\n" + Utils.calculateGoalFunction(result8)+ " " + Utils.calculatePRD(6942, result8));
-
-
-
-
-
-
-
-
-
-
+        Vector<Integer> x = Algorithms.twoOpt("CN");
+        System.out.println(Utils.calculateGoalFunction(x));
+        System.out.println(Utils.calculateGoalFunction(Algorithms.tabuSearch(EndCondition.ITERATION_WITHOUT_IMPROVEMENT, TabuExceed.REMOVE_FIRST_ELEMENT, "CN", 100, 10,null, "swap", 20, 10d,100000,1000,false,x )));
     }
 
 }

@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Vector;
 
@@ -143,11 +144,162 @@ public class Algorithms {
                     }
                 }
             }
-
         }
         return solution;
     }
 
+
+
+    public static Vector<Integer> tabuSearch(EndCondition end_condition, TabuExceed tabuExceed, String basicSolution, Integer maxIteration, Integer environmentSize,
+                                             Integer environmentSizeIncrease, String mode, Integer maxTabuListSize, Double worseDeviationPercent,
+                                             Integer maxIterationsWithoutImprovement, Integer maxTimeMillis, boolean checkWorseOption, Vector<Integer> startingSolution){
+
+        Vector<Integer> solution;
+        int iterationWithoutImprovement =0;
+        long start = System.currentTimeMillis();
+
+        double deviation = 0.0d;
+
+        if (basicSolution != null) {
+           solution = twoOpt(basicSolution);
+        }else {
+           solution = startingSolution;
+        }
+
+            int solutionCost = (int) Utils.calculateGoalFunction(solution);
+
+            Vector<Integer> bestSolution = solution;
+            int bestSolutionCost = solutionCost;
+
+
+        ArrayList<Integer> tabuList = new ArrayList<>();
+
+        Vector<Vector<Integer>> environment = new Vector<>();
+
+
+        for(int i =0; true; i++){
+            int bestCostLocally = Integer.MAX_VALUE;
+            Vector<Integer> bestCandidate = new Vector<>();
+
+            bestCandidate.add(Integer.MAX_VALUE);
+            bestCandidate.add(Integer.MAX_VALUE);
+
+            int differenceOfBestCandidate = 0;
+            environment = Utils.generateEnvironment(environmentSize);
+            for(int j = 0; j < environment.size(); j++){
+
+                int firstElement = environment.get(j).get(0);
+                int secondElement = environment.get(j).get(1);
+
+                int difference = secondElement - firstElement;
+
+                if(!tabuList.contains(difference)){
+
+
+                    int currentCost = Integer.MAX_VALUE;
+                    if(mode.equals("invert")){
+                         currentCost  = (int) Utils.calculateGoalFunction(Utils.invert(solution, firstElement, secondElement));
+                    } else if(mode.equals("swap")){
+                        currentCost  = (int) Utils.calculateGoalFunction(Utils.swap(solution, firstElement, secondElement));
+                    }
+
+                    if(currentCost < bestCostLocally){
+                        bestCostLocally = currentCost;
+                        differenceOfBestCandidate = difference;
+                        bestCandidate.set(0, firstElement);
+                        bestCandidate.set(1, secondElement);
+                    }
+                }
+            }
+
+            if(bestCostLocally <= solutionCost + deviation * solutionCost){
+                solutionCost = bestCostLocally;
+
+                if(mode.equals("invert")){
+
+                    solution = Utils.invert(solution, bestCandidate.get(0), bestCandidate.get(1) );
+                } else {
+                    solution = Utils.swap(solution, bestCandidate.get(0), bestCandidate.get(1) );
+                }
+
+            }
+            tabuList.add(differenceOfBestCandidate);
+            if(tabuList.size() >= maxTabuListSize){
+
+
+                switch(tabuExceed) {
+                    case RETURN: {
+                        return bestSolution;
+                    }
+                    case REMOVE_FIRST_ELEMENT:{
+
+                        tabuList.remove(0);
+
+                    }
+                    break;
+
+                    case RESTART:{
+
+                        return tabuSearch(end_condition, tabuExceed,
+                                basicSolution, maxIteration, environmentSize,
+                                environmentSizeIncrease, mode, maxTabuListSize, worseDeviationPercent,
+                                maxIterationsWithoutImprovement, maxTimeMillis, checkWorseOption, twoOpt(basicSolution));
+                    }
+
+
+                    case USE_WIDER_ENVIRONMENT:{
+
+                        environmentSize += environmentSizeIncrease;
+                    }
+                    break;
+
+                }
+            }
+            if(solutionCost < bestSolutionCost){
+                bestSolutionCost = solutionCost;
+                bestSolution = solution;
+                iterationWithoutImprovement =0;
+                deviation =0.0d;
+            } else {
+                iterationWithoutImprovement ++;
+            }
+
+            if(checkWorseOption && iterationWithoutImprovement > maxIterationsWithoutImprovement){
+                deviation = worseDeviationPercent;
+                iterationWithoutImprovement =0;
+            }
+
+
+            switch (end_condition) {
+                case ITERATION_NUMBER_EXCEEDED -> {
+                    maxIteration--;
+                    if (maxIteration < 0)
+                        return bestSolution;
+                }
+                case MAX_TIME_EXCEEDED -> {
+
+                    long end = System.currentTimeMillis();
+                    if (end - start > maxTimeMillis)
+                        return bestSolution;
+
+                }
+                case ITERATION_WITHOUT_IMPROVEMENT -> {
+
+                    if (maxIterationsWithoutImprovement - iterationWithoutImprovement == 0)
+                        return bestSolution;
+                }
+                default -> {
+                }
+                // code block
+            }
+
+        }
+
+
+        //if element z envoirment nie jest w tabu
+        //
+
+    }
 
 //    public static void closestNeighbour(int startNode){
 //        Vector<Vector<Integer>> matrix = LoadDataTSP.matrix;
