@@ -143,15 +143,17 @@ public class Test {
 
 //        Algorithms.twoOpt("CN");
 
-        LoadDataTSP.loadData("berlin52.tsp");
-        DataMatrix.format = LoadDataTSP.format;
-        DataMatrix.matrix = LoadDataTSP.matrix;
-        DataMatrix.type = LoadDataTSP.type;
-        DataMatrix.dimension = LoadDataTSP.dimension;
+//        LoadDataTSP.loadData("berlin52.tsp");
+//        DataMatrix.format = LoadDataTSP.format;
+//        DataMatrix.matrix = LoadDataTSP.matrix;
+//        DataMatrix.type = LoadDataTSP.type;
+//        DataMatrix.dimension = LoadDataTSP.dimension;
+//
+//        Vector<Integer> x = Algorithms.twoOpt("CN");
+//        System.out.println(Utils.calculateGoalFunction(x));
+//        System.out.println(Utils.calculateGoalFunction(Algorithms.tabuSearch(EndCondition.ITERATION_WITHOUT_IMPROVEMENT, TabuExceed.REMOVE_FIRST_ELEMENT, "CN", 100, 10,null, "swap", 20, 10d,100000,1000,false,x )));
 
-        Vector<Integer> x = Algorithms.twoOpt("CN");
-        System.out.println(Utils.calculateGoalFunction(x));
-        System.out.println(Utils.calculateGoalFunction(Algorithms.tabuSearch(EndCondition.ITERATION_WITHOUT_IMPROVEMENT, TabuExceed.REMOVE_FIRST_ELEMENT, "CN", 100, 10,null, "swap", 20, 10d,100000,1000,false,x )));
+        TabuTest.test();
     }
 
 }

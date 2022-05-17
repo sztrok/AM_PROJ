@@ -66,6 +66,13 @@ public class Utils {
     }
 
 
+    public static float calculatePRD(long optimalSolution, long goalFunction){
+
+        return  ((float) (goalFunction - optimalSolution)
+                *100) / (optimalSolution);
+
+    }
+
 
     public static Vector<Integer> invert(Vector<Integer> solution, int i, int j){
         Vector<Integer> tempSolution = new Vector<>(solution);

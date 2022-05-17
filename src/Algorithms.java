@@ -223,8 +223,9 @@ public class Algorithms {
                 }
 
             }
+
             tabuList.add(differenceOfBestCandidate);
-            if(tabuList.size() >= maxTabuListSize){
+            if(tabuList.size() >= maxTabuListSize || differenceOfBestCandidate ==0){
 
 
                 switch(tabuExceed) {
