@@ -342,11 +342,11 @@ public class TabuTest {
        optimalSolutions.add(699);
        optimalSolutions.add(2020);
 //       optimalSolutions.add(629);
-       createData(fileNames, optimalSolutions, "maxIteration");
+//       createData(fileNames, optimalSolutions, "maxIteration");
        createData(fileNames, optimalSolutions, "tabuSize");
-       createData(fileNames, optimalSolutions, "maxTime");
-       createData(fileNames, optimalSolutions, "envSize");
-       createData(fileNames, optimalSolutions, "withoutImprove");
+//       createData(fileNames, optimalSolutions, "maxTime");
+//       createData(fileNames, optimalSolutions, "envSize");
+//       createData(fileNames, optimalSolutions, "withoutImprove");
 
 //        for(String name: fileNames) System.out.println(name);
 //        int i =0;
