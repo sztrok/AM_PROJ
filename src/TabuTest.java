@@ -1,9 +1,8 @@
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Collections;
-import java.util.Objects;
 import java.util.Vector;
-
+import Enum.*;
 public class TabuTest {
 
     //baseIterationNumber - poczatkowa ilosc iteracji
@@ -115,7 +114,7 @@ public class TabuTest {
         }
     }
 
-    private static void solveAndWriteToFileForEnvSize(FileWriter fileWriter, int repeats,int baseEnvSize,
+    private static void     solveAndWriteToFileForEnvSize(FileWriter fileWriter, int repeats,int baseEnvSize,
                                                       int envSizeIncrease, int loopIterator, Integer optimalSolution) throws IOException {
         float prd;
         Vector<Long> goalFunctionData;
@@ -293,7 +292,7 @@ public class TabuTest {
 //            for (int k = 0; k < repeats; k++) {
 //
 //                deviation = baseDeviation + i * deviationIncrease;
-//                startingSolution.add (Algorithms.tabuSearch(EndCondition.ITERATION_WITHOUT_IMPROVEMENT, TabuExceed.REMOVE_FIRST_ELEMENT,
+//                startingSolution.add (Algorithms.tabuSearch(Enum.EndCondition.ITERATION_WITHOUT_IMPROVEMENT, TabuExceed.REMOVE_FIRST_ELEMENT,
 //                        null, null, 50, null, "invert",
 //                        50, deviation, 2000, null,
 //                        true, startingSolution.get(i)));
@@ -325,7 +324,7 @@ public class TabuTest {
 //        }
 //    }
 
-    public static void test() throws IOException {
+      public static void test() throws IOException {
 
 
 

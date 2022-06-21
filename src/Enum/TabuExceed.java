@@ -1,3 +1,5 @@
+package Enum;
+
 public enum TabuExceed {
     RETURN,
     REMOVE_FIRST_ELEMENT,

@@ -1,3 +1,5 @@
+package Enum;
+
 public enum EndCondition {
     ITERATION_NUMBER_EXCEEDED,
     MAX_TIME_EXCEEDED,

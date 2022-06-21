@@ -1,6 +1,7 @@
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Vector;
+import java.util.*;
+
+import Enum.*;
+import Enum.TabuExceed;
 
 public class Algorithms {
 
@@ -25,6 +26,7 @@ public class Algorithms {
                 dimVector.add(j);
             }
             Collections.shuffle(dimVector);
+
 
             if(Utils.calculateGoalFunction(dimVector) < Utils.calculateGoalFunction(result)) {
 
@@ -149,11 +151,194 @@ public class Algorithms {
     }
 
 
+    public static Vector<Integer> geneticAlgorithm(Integer populationSize,
+                                                   GeneratingStartingPopulationMethod generatingStartingPopulationMethod,
+                                                   Integer kRandValue, ParentSelectionMethod parentSelectionMethod,
+                                                   CrossoverMethod crossoverMethod, MutationMethod mutationMethod,
+                                                   double mutationProbability,
+                                                   EndCondition end_condition, Integer maxIteration, Integer maxTimeMillis,
+                                                   Integer maxIterationsWithoutImprovement,
+                                                   int chromosomeSize,
+                                                   double crossProbability
+                                                   ){
+        long start = System.currentTimeMillis();
+        Vector<Integer> bestSolutionGlobally = new Vector<>();
+        int bestCostGlobally = Integer.MAX_VALUE;
+
+
+        Parents.chromosomeSize = chromosomeSize;
+        Parents.crossProbability = crossProbability;
+        Random rand = new Random();
+        Vector<Unit> population = new Vector<>();
+        int iterationWithoutImprovement = 0;
+        //generating starting population
+        for(int i= 0; i < populationSize; i++){
+            Unit unit = new Unit();
+            for(int j =0; j < chromosomeSize; j++ ) {
+
+                switch (generatingStartingPopulationMethod) {
+
+                    case HEURISTIC_2OPT -> unit.addChromosome(Algorithms.twoOpt("kRand"));
+                    case HEURISTIC_CLOSEST_NEIGHBOUR -> unit.addChromosome(closestNeighbour(0));
+                    case HEURISTIC_EXTENDED_CLOSEST_NEIGHBOUR -> unit.addChromosome(extendedClosestNeighbour());
+                    case HEURISTIC_KRAND -> unit.addChromosome(kRandom(kRandValue));
+                }
+            }
+            population.add(unit);
+        }
+
+        for(int z =0; true; z++) {
+
+
+            for(int i =0; i < population.size(); i++){
+                for(int j =0; j< chromosomeSize; j++){
+
+                    int fitness = (int) Utils.calculateGoalFunction(population.get(i).genotype.get(j));
+                    population.get(i).fenotype.set(j, fitness);
+                    if(fitness < bestCostGlobally){
+                        iterationWithoutImprovement = 0;
+                        bestCostGlobally = fitness;
+                        bestSolutionGlobally = population.get(i).genotype.get(j);
+                    }
+                }
+            }
+            //wybieranie populacji rodzicow
+            Vector<Parents> parents = new Vector<>();
+
+
+            switch (parentSelectionMethod) {
+                case RANDOM -> {
+                    for (int i = 0; i < populationSize / 2; i++) {
+
+                        Unit parent1 = population.get(rand.nextInt(populationSize));
+                        Unit parent2 = population.get(rand.nextInt(populationSize));
+
+                        parents.add(new Parents(parent1, parent2));
+                    }
+                }
+                case ROULETTE -> {
+
+                    int sumOfFitness = 0;
+                    for (int i = 0; i < populationSize; i++) {
+                        sumOfFitness += population.get(i).getFenotypeSum();
+                    }
+                    double[] probabilities = new double[populationSize];
+                    double sumOfProbabilities = 0.0d;
+                    for (int i = 0; i < populationSize; i++) {
+                        double probability = sumOfProbabilities + (double) population.get(i).getFenotypeSum() / sumOfFitness;
+                        sumOfProbabilities += probability;
+                        probabilities[i] = probability;
+                    }
+
+                    for (int i = 0; i < populationSize; i++) {
+
+                        double r = rand.nextDouble();
+                        int index1 = 0;
+                        for (int j = 0; j < populationSize; j++) {
+                            index1 = j;
+                            if (probabilities[j] < r) {
+                                break;
+                            }
+                        }
+                        int index2 = -1;
+                        do {
+                            r = rand.nextDouble();
+
+                            for (int j = 0; j < populationSize; j++) {
+                                index2 = j;
+                                if (probabilities[j] < r) {
+                                    break;
+                                }
+                            }
+                        }while(index2 == index1);
+
+                        Unit parent1 = population.get(index1);
+                        Unit parent2 = population.get(index2);
+
+                        parents.add(new Parents(parent1, parent2));
+                    }
+
+                }
+            }
+
+            population.clear();
+            switch (crossoverMethod){
+                case PartiallyMappedCrossover ->{
+                    for(Parents parentsPair: parents){
+                        population.addAll(parentsPair.partiallyMixedCrossover());
+                    }
+                }
+            }
+
+
+            switch (mutationMethod){
+                case SWAP ->{
+                    for(Unit unit:population){
+                        if (mutationProbability < rand.nextDouble()) {
+                            int index = rand.nextInt(chromosomeSize);
+                            int i = rand.nextInt(unit.genotype.get(index).size());
+                            int j = rand.nextInt(unit.genotype.get(index).size());
+                            Vector<Integer> newGenotype = Utils.swap( unit.genotype.get(index), i ,j);
+
+                            int fitness = (int) Utils.calculateGoalFunction(newGenotype);
+                            unit.fenotype.set(index, fitness);
+                        }
+                    }
+                }
+                case INVERT ->{
+                    for(Unit unit:population){
+                        if (mutationProbability < rand.nextDouble()) {
+
+                            int index = rand.nextInt(chromosomeSize);
+                            int i = rand.nextInt(unit.genotype.get(index).size());
+                            int j = i;
+
+                            while(j <= i){
+                                j = rand.nextInt(unit.genotype.get(index).size());
+                            }
+                            Vector<Integer> newGenotype = Utils.invert( unit.genotype.get(index), i ,j);
+
+                            int fitness = (int) Utils.calculateGoalFunction(newGenotype);
+                            unit.fenotype.set(index, fitness);
+                        }
+                    }
+                }
+            }
+
+            switch (end_condition) {
+                case ITERATION_NUMBER_EXCEEDED -> {
+                    maxIteration--;
+                    if (maxIteration < 0)
+                        return bestSolutionGlobally;
+                }
+                case MAX_TIME_EXCEEDED -> {
+
+                    long end = System.currentTimeMillis();
+                    if (end - start > maxTimeMillis)
+                        return bestSolutionGlobally;
+
+                }
+                case ITERATION_WITHOUT_IMPROVEMENT -> {
+
+                    if (maxIterationsWithoutImprovement - iterationWithoutImprovement == 0)
+                        return bestSolutionGlobally;
+                }
+                default -> {
+                }
+                // code block
+            }
+            iterationWithoutImprovement++;
+        }
+
+    }
+
 
     public static Vector<Integer> tabuSearch(EndCondition end_condition, TabuExceed tabuExceed, String basicSolution, Integer maxIteration, Integer environmentSize,
                                              Integer environmentSizeIncrease, String mode, Integer maxTabuListSize, Double worseDeviationPercent,
                                              Integer maxIterationsWithoutImprovement, Integer maxTimeMillis, boolean checkWorseOption, Vector<Integer> startingSolution){
 
+
+        int c = 6942;
         Vector<Integer> solution;
         int iterationWithoutImprovement =0;
         long start = System.currentTimeMillis();
@@ -161,16 +346,17 @@ public class Algorithms {
         double deviation = 0.0d;
 
         if (basicSolution != null) {
+
            solution = twoOpt(basicSolution);
         }else {
            solution = startingSolution;
         }
 
-            int solutionCost = (int) Utils.calculateGoalFunction(solution);
+        int solutionCost = (int) Utils.calculateGoalFunction(solution);
 
-            Vector<Integer> bestSolution = solution;
-            int bestSolutionCost = solutionCost;
-
+        Vector<Integer> bestSolution = solution;
+        int bestSolutionCost = solutionCost;
+        System.out.println( "starting: " +bestSolutionCost + " " + Utils.calculatePRD(c, bestSolutionCost) );
 
         ArrayList<Integer> tabuList = new ArrayList<>();
 
@@ -261,6 +447,7 @@ public class Algorithms {
                 bestSolution = solution;
                 iterationWithoutImprovement =0;
                 deviation =0.0d;
+                System.out.println( i + " " +bestSolutionCost + " " + Utils.calculatePRD(c, bestSolutionCost));
             } else {
                 iterationWithoutImprovement ++;
             }
