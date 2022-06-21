@@ -52,6 +52,13 @@ public class Parents {
             Vector<Integer> worst;
             Vector<Integer> best;
 
+
+//            System.out.println("P1p " + parent1.genotype.size());
+//            System.out.println("P2p " + parent2.genotype.size());
+//            System.out.println("chp " + chromosomeSize);
+//            System.out.println(parent1.genotype);
+//            System.out.println(parent2.genotype);
+//            System.out.println(parent1.equals(parent2));
             if( Collections.max(parent1.fenotype) >  Collections.max(parent2.fenotype)){
                 worst = parent1Worst;
                 best = parent2Best;
@@ -63,20 +70,44 @@ public class Parents {
                 parent2.genotype.remove(worst);
                 parent1.genotype.remove(best);
             }
+//            System.out.println("best " + best);
+//            System.out.println("worst " + worst);
             childrenUnit1.addChromosome(best);
             childrenUnit2.addChromosome(best);
 
-            System.out.println("P1 " + parent1.genotype.size());
-            System.out.println("P2 " + parent2.genotype.size());
-            System.out.println("ch " + chromosomeSize);
+//            System.out.println("P1 " + parent1.genotype.size());
+//            System.out.println("P2 " + parent2.genotype.size());
+//            System.out.println("ch " + chromosomeSize);
+//            System.out.println(parent1.genotype);
+//            System.out.println(parent2.genotype);
+
+
+
+            ArrayList<Integer> list1 = new ArrayList<>();
+            ArrayList<Integer> list2 = new ArrayList<>();
+
+            for(int j=0; j<chromosomeSize-1; j++){
+                list1.add(j);
+                list2.add(j);
+            }
+            Collections.shuffle(list1);
+            Collections.shuffle(list2);
+
+
             for(int i =0; i < chromosomeSize -1; i++){
                 Vector<Vector<Integer>> result = new Vector<>();
 
 
+
+                int index1 = list1.get(i);
+                int index2 = list2.get(i);
+
+
+
                 switch (crossoverMethod){
-                    case PartiallyMappedCrossover -> result = partiallyMappedCrossover(parent1.genotype.get(i), parent2.genotype.get(i),
+                    case PartiallyMappedCrossover -> result = partiallyMappedCrossover(parent1.genotype.get(index1), parent2.genotype.get(index2),
                             crossoverPoint1, crossoverPoint2);
-                    case OrderCrossover -> result = orderCrossover(parent1.genotype.get(i), parent2.genotype.get(i),
+                    case OrderCrossover -> result = orderCrossover(parent1.genotype.get(index1), parent2.genotype.get(index2),
                             crossoverPoint1, crossoverPoint2);
                 }
 

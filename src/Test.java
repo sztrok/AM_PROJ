@@ -1,4 +1,6 @@
 import java.io.IOException;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Vector;
 
 import EnumPack.*;
@@ -180,7 +182,44 @@ public class Test {
 //        Vector<Vector<Integer>> k  = p.partiallyMappedCrossover(x,y,0,4);
 //
 //        System.out.println(k);
-        System.out.println("RES: "+Utils.calculateGoalFunction(Algorithms.geneticAlgorithm(100,GeneratingStartingPopulationMethod.HEURISTIC_KRAND,1000, ParentSelectionMethod.RANDOM, CrossoverMethod.OrderCrossover,MutationMethod.SWAP,0.1d,EndCondition.ITERATION_NUMBER_EXCEEDED, 5000, Integer.MAX_VALUE, Integer.MAX_VALUE, 20,0.9d)));
+
+
+
+//        Unit u1 = new Unit();
+//        Vector<Integer> a = Algorithms.kRandom(1000);
+//        Vector<Integer> b = Algorithms.kRandom(1000);
+//        Vector<Integer> c = Algorithms.kRandom(1000);
+//
+//        u1.addChromosome(a);
+//        u1.addChromosome(b);
+//        u1.addChromosome(c);
+//
+//        Unit u2 = new Unit();
+//        Vector<Integer> d = Algorithms.kRandom(1000);
+//        Vector<Integer> e = Algorithms.kRandom(1000);
+//        Vector<Integer> f = Algorithms.kRandom(1000);
+//        u2.addChromosome(d);
+//        u2.addChromosome(e);
+//        u2.addChromosome(f);
+//        Vector<Unit> x = new Vector<>();
+//
+//        x.add(u1);
+//        x.add(u2);
+//        System.out.println(u1.fenotypeSum);
+//        System.out.println(u2.fenotypeSum);
+//
+//
+//        x.sort(new Comparator<Unit>() {
+//            @Override
+//            public int compare(Unit o1, Unit o2) {
+//                return o1.fenotypeSum - o2.fenotypeSum;
+//            }
+//        });
+//       System.out.println(x.get(0).fenotypeSum + " " +x.get(1).fenotypeSum);
+    System.out.println("RES: "+Utils.calculateGoalFunction(Algorithms.geneticAlgorithm(100,GeneratingStartingPopulationMethod.HEURISTIC_KRAND,1000,
+            ParentSelectionMethod.RANDOM, CrossoverMethod.PartiallyMappedCrossover, MutationMethod.INVERT,
+            0.1d,EndCondition.ITERATION_NUMBER_EXCEEDED, 500,
+            Integer.MAX_VALUE, Integer.MAX_VALUE, 10,0.7d, 100, 20)));
 //        Vector<Integer> v1 = new Vector<>();
 //        Vector<Integer> v2 = new Vector<>();
 //        v1.add(1);

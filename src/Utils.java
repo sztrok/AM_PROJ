@@ -1,5 +1,6 @@
 import javax.xml.crypto.Data;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Random;
 import java.util.Vector;
 
@@ -18,7 +19,11 @@ public class Utils {
         }
         System.out.println(sb.toString());
     }
-
+    class ChairWeightComparator implements Comparator<Unit> {
+        public int compare(Unit chair1, Unit chair2) {
+            return chair1.fenotypeSum - chair2.fenotypeSum;
+        }
+    }
     public static long calculateGoalFunction(Vector<Integer> solution){
 
         long result = 0;
