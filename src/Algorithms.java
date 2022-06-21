@@ -195,12 +195,7 @@ public class Algorithms {
             for(int i =0; i < population.size(); i++){
                 for(int j =0; j< chromosomeSize; j++){
 
-                    population.sort(new Comparator<Unit>() {
-                        @Override
-                        public int compare(Unit o1, Unit o2) {
-                            return o1.fenotypeSum - o2.fenotypeSum;
-                        }
-                    });
+
 
 
 
@@ -216,6 +211,13 @@ public class Algorithms {
                 }
             }
             if(end_condition != EndCondition.ITERATION_WITHOUT_IMPROVEMENT) {
+
+                population.sort(new Comparator<Unit>() {
+                    @Override
+                    public int compare(Unit o1, Unit o2) {
+                        return o1.fenotypeSum - o2.fenotypeSum;
+                    }
+                });
                 if (iterationWithoutImprovement == iterationWithoutImprovementLimit){
 
                     iterationWithoutImprovement =0;
