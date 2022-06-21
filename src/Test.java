@@ -216,10 +216,50 @@ public class Test {
 //            }
 //        });
 //       System.out.println(x.get(0).fenotypeSum + " " +x.get(1).fenotypeSum);
-    System.out.println("RES: "+Utils.calculateGoalFunction(Algorithms.geneticAlgorithm(100,GeneratingStartingPopulationMethod.HEURISTIC_KRAND,1000,
-            ParentSelectionMethod.RANDOM, CrossoverMethod.PartiallyMappedCrossover, MutationMethod.INVERT,
-            0.1d,EndCondition.ITERATION_NUMBER_EXCEEDED, 500,
-            Integer.MAX_VALUE, Integer.MAX_VALUE, 10,0.7d, 100, 20)));
+//    System.out.println("RES: "+Utils.calculateGoalFunction(
+
+
+//
+//        Vector<Unit> population = new Vector<>();
+//        Unit u1 = new Unit();
+//        u1.fenotypeSum = 100;
+//        Unit u2 = new Unit();
+//        u2.fenotypeSum = 100;
+//        Unit u3 = new Unit();
+//        u3.fenotypeSum = 400;
+//        population.add(u1);
+//        population.add(u2);
+//        population.add(u3);
+//
+//        double sumOfFitness = 0.0d;
+//        for (int i = 0; i < population.size(); i++) {
+//            sumOfFitness += 1/ (double) population.get(i).fenotypeSum;
+//        }
+//        double[] probabilities = new double[population.size()];
+//        double[] singleProb = new double[population.size()];
+//
+//        double sumOfProbabilities = 0.0d;
+//        probabilities[0] = 0.0d;
+//        for (int i = 0; i < population.size() - 1; i++) {
+//
+//            double probability =  sumOfProbabilities + ((double)  1/population.get(i).fenotypeSum)/sumOfFitness ;
+//            sumOfProbabilities += probability;
+//            probabilities[i+1] = probability;
+//        }
+//        for(int i =0; i < probabilities.length; i++ ){
+//            System.out.println(probabilities[i]);
+//
+//        }
+//        for(int i =0; i < probabilities.length; i++ ){
+//           ;
+//            System.out.println(singleProb[i]);
+//        }
+
+
+        System.out.println(Utils.calculateGoalFunction( Algorithms.geneticAlgorithm(1000,GeneratingStartingPopulationMethod.HEURISTIC_KRAND,1000,
+                ParentSelectionMethod.ROULETTE, CrossoverMethod.OrderCrossover, MutationMethod.INVERT,
+                0.2d,EndCondition.ITERATION_NUMBER_EXCEEDED, 500,
+                Integer.MAX_VALUE, Integer.MAX_VALUE, 6,0.9d, 200, 40)));
 //        Vector<Integer> v1 = new Vector<>();
 //        Vector<Integer> v2 = new Vector<>();
 //        v1.add(1);

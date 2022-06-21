@@ -1,3 +1,4 @@
+import java.sql.SQLOutput;
 import java.util.*;
 
 import EnumPack.*;
@@ -190,14 +191,10 @@ public class Algorithms {
         }
         System.out.println("BEST SOLUTION: "+bestCostGlobally);
         for(int z =0; true; z++) {
-
+            System.out.println("z= " + z);
 
             for(int i =0; i < population.size(); i++){
                 for(int j =0; j< chromosomeSize; j++){
-
-
-
-
 
                     int fitness = (int) Utils.calculateGoalFunction(population.get(i).genotype.get(j));
                     population.get(i).fenotype.set(j, fitness);
@@ -212,13 +209,15 @@ public class Algorithms {
             }
             if(end_condition != EndCondition.ITERATION_WITHOUT_IMPROVEMENT) {
 
-                population.sort(new Comparator<Unit>() {
-                    @Override
-                    public int compare(Unit o1, Unit o2) {
-                        return o1.fenotypeSum - o2.fenotypeSum;
-                    }
-                });
+
                 if (iterationWithoutImprovement == iterationWithoutImprovementLimit){
+                    System.out.println("PURGE");
+                    population.sort(new Comparator<Unit>() {
+                        @Override
+                        public int compare(Unit o1, Unit o2) {
+                            return o1.getFenotypeSum() - o2.getFenotypeSum();
+                        }
+                    });
 
                     iterationWithoutImprovement =0;
                     for(int i = oldUnitsNumberAfterStagnation; i < population.size() ; i++) {
@@ -268,39 +267,62 @@ public class Algorithms {
                 }
                 case ROULETTE -> {
 
-                    int sumOfFitness = 0;
-                    for (int i = 0; i < populationSize; i++) {
-                        sumOfFitness += population.get(i).getFenotypeSum();
+                    double sumOfFitness = 0.0d;
+                    for (int i = 0; i < population.size(); i++) {
+                        sumOfFitness += 1/ (double) population.get(i).getFenotypeSum();
                     }
-                    double[] probabilities = new double[populationSize];
+                    double[] probabilities = new double[population.size()];
+                    double[] singleProb = new double[population.size()];
                     double sumOfProbabilities = 0.0d;
-                    for (int i = 0; i < populationSize; i++) {
-                        double probability =  sumOfProbabilities - (double) ( chromosomeSize * bestCostGlobally- population.get(i).getFenotypeSum()) / sumOfFitness;
-                        sumOfProbabilities += probability;
-                        probabilities[i] = probability;
+                    probabilities[0] = 0.0d;
+                    for (int i = 0; i < population.size() - 1; i++) {
+                        singleProb[i] =  ((double)  1/population.get(i).getFenotypeSum())/sumOfFitness;
+                        double probability =  sumOfProbabilities + ((double)  1/population.get(i).getFenotypeSum())/sumOfFitness ;
+                        singleProb[i] =((double)  1/population.get(i).getFenotypeSum())/sumOfFitness;
+                        sumOfProbabilities += ((double)  1/population.get(i).getFenotypeSum())/sumOfFitness;
+                        probabilities[i+1] = probability;
                     }
-
+//                    System.out.println("XXXXXXXXXXXXXXXXX");
+//                    for(double x: singleProb){
+//                        System.out.println(x);
+//                    }
+//                    System.out.println("XXXXXXXXXXXXXXXXX");
+//                    System.out.println("YYYYYYYYYYYYYYYYYY");
+//                    for(Unit x: population){
+//                        System.out.println(x.getFenotypeSum());
+//                    }
+//                    System.out.println("YYYYYYYYYYYYYYYYYY");
                     for (int i = 0; i < populationSize/2; i++) {
 
                         double r = rand.nextDouble();
+
                         int index1 = 0;
                         for (int j = 0; j < populationSize; j++) {
                             index1 = j;
-                            if (probabilities[j] < r) {
+                            if (probabilities[j] > r) {
+                                index1 = index1-1;
+
                                 break;
                             }
                         }
+
+
+
                         int index2 = -1;
                         do {
-                            r = rand.nextDouble();
-
+                             r = rand.nextDouble();
+//                            System.out.println("R2 " + r);
                             for (int j = 0; j < populationSize; j++) {
                                 index2 = j;
-                                if (probabilities[j] < r) {
+
+                                if (probabilities[j] > r) {
+                                    index2 = index2-1;
+
                                     break;
                                 }
                             }
-                        }while(index2 == index1);
+
+                        }while(population.get(index2).equals(population.get(index1)));
 
                         Unit parent1 = population.get(index1);
                         Unit parent2 = population.get(index2);
@@ -333,6 +355,7 @@ public class Algorithms {
                                Vector<Integer> newGenotype = Utils.swap(unit.genotype.get(k), i, j);
 
                                int fitness = (int) Utils.calculateGoalFunction(newGenotype);
+                               unit.genotype.set(k, newGenotype);
                                unit.fenotype.set(k, fitness);
                            }
                         }
@@ -350,8 +373,10 @@ public class Algorithms {
                                     j = rand.nextInt(unit.genotype.get(index).size());
                                 }
                                 Vector<Integer> newGenotype = Utils.invert(unit.genotype.get(index), i, j);
+                                unit.genotype.set(index, newGenotype);
                                 int fitness = (int) Utils.calculateGoalFunction(newGenotype);
                                 unit.fenotype.set(index, fitness);
+
                             }
                         }
                     }
