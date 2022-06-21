@@ -40,23 +40,59 @@ public class Parents {
 //            System.out.println("LOOP");
 //        }
 
-        for(int i =0; i < chromosomeSize; i++){
-            Vector<Vector<Integer>> result = new Vector<>();
-
-            switch (crossoverMethod){
-                case PartiallyMappedCrossover -> result = partiallyMappedCrossover(parent1.genotype.get(i), parent2.genotype.get(i),
-                        crossoverPoint1, crossoverPoint2);
-                case OrderCrossover -> result = orderCrossover(parent1.genotype.get(i), parent2.genotype.get(i),
-                        crossoverPoint1, crossoverPoint2);
-            }
-
-
-
-            childrenUnit1.addChromosome(result.get(0));
-            childrenUnit2.addChromosome(result.get(1));
-        }
         Vector<Unit> children = new Vector<>();
         if(crossProbability >= rand.nextDouble()){
+
+
+            Vector<Integer> parent1Best =  parent1.genotype.get( parent1.fenotype.indexOf( Collections.min(parent1.fenotype)));
+            Vector<Integer> parent1Worst =  parent1.genotype.get( parent1.fenotype.indexOf( Collections.max(parent1.fenotype)));
+            Vector<Integer> parent2Best =  parent2.genotype.get( parent2.fenotype.indexOf( Collections.min(parent2.fenotype)));
+            Vector<Integer> parent2Worst =  parent2.genotype.get( parent2.fenotype.indexOf( Collections.max(parent2.fenotype)));
+
+            Vector<Integer> worst;
+            Vector<Integer> best;
+
+            if( Collections.max(parent1.fenotype) >  Collections.max(parent2.fenotype)){
+                worst = parent1Worst;
+                best = parent2Best;
+                parent1.genotype.remove(worst);
+                parent2.genotype.remove(best);
+            }else{
+                worst = parent2Worst;
+                best = parent1Best;
+                parent2.genotype.remove(worst);
+                parent1.genotype.remove(best);
+            }
+            childrenUnit1.addChromosome(best);
+            childrenUnit2.addChromosome(best);
+
+            System.out.println("P1 " + parent1.genotype.size());
+            System.out.println("P2 " + parent2.genotype.size());
+            System.out.println("ch " + chromosomeSize);
+            for(int i =0; i < chromosomeSize -1; i++){
+                Vector<Vector<Integer>> result = new Vector<>();
+
+
+                switch (crossoverMethod){
+                    case PartiallyMappedCrossover -> result = partiallyMappedCrossover(parent1.genotype.get(i), parent2.genotype.get(i),
+                            crossoverPoint1, crossoverPoint2);
+                    case OrderCrossover -> result = orderCrossover(parent1.genotype.get(i), parent2.genotype.get(i),
+                            crossoverPoint1, crossoverPoint2);
+                }
+
+                childrenUnit1.addChromosome(result.get(0));
+                childrenUnit2.addChromosome(result.get(1));
+            }
+
+            if( Collections.max(parent1.fenotype) >  Collections.max(parent2.fenotype)){
+
+                parent1.genotype.add(worst);
+                parent2.genotype.add(best);
+            }else{
+                parent2.genotype.add(worst);
+                parent1.genotype.add(best);
+            }
+
             children.add(childrenUnit1);
             children.add(childrenUnit2);
         }else{
@@ -153,7 +189,7 @@ public class Parents {
 
 
 
-   private Vector<Vector<Integer>> partiallyMappedCrossover(Vector<Integer> parentChromosome1, Vector<Integer> parentChromosome2,
+   public Vector<Vector<Integer>> partiallyMappedCrossover(Vector<Integer> parentChromosome1, Vector<Integer> parentChromosome2,
                                                             int crossoverPoint1, int crossoverPoint2){
         assert  crossoverPoint2 >crossoverPoint1;
 
