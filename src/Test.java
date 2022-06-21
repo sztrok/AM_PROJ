@@ -151,14 +151,16 @@ public class Test {
         Vector<Integer> x = new Vector<>();
         Vector<Integer> y = new Vector<>();
 
+        x.add(1);
+        x.add(2);
         x.add(3);
         x.add(4);
-        x.add(8);
-        x.add(2);
-        x.add(7);
-        x.add(1);
-        x.add(6);
         x.add(5);
+        x.add(6);
+        x.add(7);
+        x.add(8);
+
+
 
         y.add(4);
         y.add(2);
@@ -171,8 +173,10 @@ public class Test {
         System.out.println(x);
         System.out.println(y);
 
+        Parents p = new Parents(null, null);
+        Vector<Vector<Integer>> k  = p.orderCrossover(x,y,3,7);
 
-//
+        System.out.println(k);
 //        Vector<Integer> v1 = new Vector<>();
 //        Vector<Integer> v2 = new Vector<>();
 //        v1.add(1);
