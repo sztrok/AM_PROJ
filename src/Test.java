@@ -1,10 +1,4 @@
-import javax.xml.crypto.Data;
-import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.sql.SQLOutput;
-import java.util.Arrays;
-import java.util.Scanner;
 import java.util.Vector;
 
 public class Test {
@@ -151,9 +145,40 @@ public class Test {
 //
 //        Vector<Integer> x = Algorithms.twoOpt("CN");
 //        System.out.println(Utils.calculateGoalFunction(x));
-//        System.out.println(Utils.calculateGoalFunction(Algorithms.tabuSearch(EndCondition.ITERATION_WITHOUT_IMPROVEMENT, TabuExceed.REMOVE_FIRST_ELEMENT, "CN", 100, 10,null, "swap", 20, 10d,100000,1000,false,x )));
+//        System.out.println(Utils.calculateGoalFunction(Algorithms.tabuSearch(Enum.EndCondition.ITERATION_WITHOUT_IMPROVEMENT, TabuExceed.REMOVE_FIRST_ELEMENT, "CN", 100, 10,null, "swap", 20, 10d,100000,1000,false,x )));
 
-        TabuTest.test();
+
+        Vector<Integer> x = new Vector<>();
+        Vector<Integer> y = new Vector<>();
+
+        x.add(3);
+        x.add(4);
+        x.add(8);
+        x.add(2);
+        x.add(7);
+        x.add(1);
+        x.add(6);
+        x.add(5);
+
+        y.add(4);
+        y.add(2);
+        y.add(5);
+        y.add(1);
+        y.add(6);
+        y.add(8);
+        y.add(3);
+        y.add(7);
+        System.out.println(x);
+        System.out.println(y);
+
+
+//
+//        Vector<Integer> v1 = new Vector<>();
+//        Vector<Integer> v2 = new Vector<>();
+//        v1.add(1);
+//        v2.add(v1.get(0));
+//        v1.set(0,10);
+//        System.out.println(v2);
     }
 
 }

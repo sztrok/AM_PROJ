@@ -7,6 +7,9 @@ matplotlib.use('TkAgg')
 import matplotlib.pyplot as plt
 
 
+
+
+
 def twoOptPlot():
     file = "test_two_opt.txt"
     fileDir = os.path.dirname(os.path.realpath('__file__'))

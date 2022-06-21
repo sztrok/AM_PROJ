@@ -1,0 +1,7 @@
+package Enum;
+
+public enum GeneratingStartingPopulationMethod {
+
+
+    RANDOM, HEURISTIC_2OPT, HEURISTIC_EXTENDED_CLOSEST_NEIGHBOUR, HEURISTIC_CLOSEST_NEIGHBOUR, HEURISTIC_KRAND
+}
