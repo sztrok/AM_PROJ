@@ -1,4 +1,5 @@
 import java.io.IOException;
+import java.util.Vector;
 
 import EnumPack.*;
 
@@ -149,10 +150,10 @@ public class Test {
 //        System.out.println(Utils.calculateGoalFunction(x));
 //        System.out.println(Utils.calculateGoalFunction(Algorithms.tabuSearch(Enum.EndCondition.ITERATION_WITHOUT_IMPROVEMENT, TabuExceed.REMOVE_FIRST_ELEMENT, "CN", 100, 10,null, "swap", 20, 10d,100000,1000,false,x )));
 
-
+//
 //        Vector<Integer> x = new Vector<>();
 //        Vector<Integer> y = new Vector<>();
-//
+////
 //        x.add(1);
 //        x.add(2);
 //        x.add(3);
@@ -176,7 +177,7 @@ public class Test {
 //        System.out.println(y);
 //
 //        Parents p = new Parents(null, null);
-//        Vector<Vector<Integer>> k  = p.orderCrossover(x,y,3,7);
+//        Vector<Vector<Integer>> k  = p.partiallyMappedCrossover(x,y,0,4);
 //
 //        System.out.println(k);
         System.out.println("RES: "+Utils.calculateGoalFunction(Algorithms.geneticAlgorithm(100,GeneratingStartingPopulationMethod.HEURISTIC_KRAND,1000, ParentSelectionMethod.RANDOM, CrossoverMethod.OrderCrossover,MutationMethod.SWAP,0.1d,EndCondition.ITERATION_NUMBER_EXCEEDED, 5000, Integer.MAX_VALUE, Integer.MAX_VALUE, 20,0.9d)));

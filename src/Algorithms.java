@@ -215,10 +215,15 @@ public class Algorithms {
 
             switch (parentSelectionMethod) {
                 case RANDOM -> {
-                    for (int i = 0; i < populationSize / 2; i++) {
+                    ArrayList<Integer> list = new ArrayList<>();
+                    for(int i=0; i<populationSize; i++){
+                        list.add(i);
+                    }
+                    Collections.shuffle(list);
+                    for (int i = 0; i < populationSize -1; i++) {
 
-                        Unit parent1 = population.get(rand.nextInt(populationSize));
-                        Unit parent2 = population.get(rand.nextInt(populationSize));
+                        Unit parent1 = population.get(list.get(i));
+                        Unit parent2 = population.get(list.get(i+1));
 
                         parents.add(new Parents(parent1, parent2));
 
