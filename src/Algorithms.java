@@ -168,6 +168,7 @@ public class Algorithms {
 
         Parents.chromosomeSize = chromosomeSize;
         Parents.crossProbability = crossProbability;
+        Parents.crossoverMethod = crossoverMethod;
         Random rand = new Random();
         Vector<Unit> population = new Vector<>();
         int iterationWithoutImprovement = 0;
@@ -262,13 +263,12 @@ public class Algorithms {
             }
 
             population.clear();
-            switch (crossoverMethod){
-                case PartiallyMappedCrossover ->{
-                    for(Parents parentsPair: parents){
-                        population.addAll(parentsPair.partiallyMixedCrossover());
-                    }
-                }
+
+            for(Parents parentsPair: parents){
+                population.addAll(parentsPair.cross());
             }
+
+
 
 
             switch (mutationMethod){
