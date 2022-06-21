@@ -1,4 +1,4 @@
-package Enum;
+package EnumPack;
 
 public enum MutationMethod {
     INVERT,SWAP

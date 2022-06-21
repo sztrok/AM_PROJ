@@ -1,7 +1,7 @@
 import java.util.*;
 
-import Enum.*;
-import Enum.TabuExceed;
+import EnumPack.*;
+import EnumPack.TabuExceed;
 
 public class Algorithms {
 
@@ -187,7 +187,7 @@ public class Algorithms {
             }
             population.add(unit);
         }
-
+        System.out.println("BEST SOLUTION: "+bestCostGlobally);
         for(int z =0; true; z++) {
 
 
@@ -200,9 +200,15 @@ public class Algorithms {
                         iterationWithoutImprovement = 0;
                         bestCostGlobally = fitness;
                         bestSolutionGlobally = population.get(i).genotype.get(j);
+                        System.out.println("BEST SOLUTION: "+bestCostGlobally);
                     }
                 }
+                if(i==80){
+                    System.out.println("EE "+(int) Utils.calculateGoalFunction(population.get(i).genotype.get(0)));
+                }
             }
+
+
             //wybieranie populacji rodzicow
             Vector<Parents> parents = new Vector<>();
 
@@ -215,7 +221,9 @@ public class Algorithms {
                         Unit parent2 = population.get(rand.nextInt(populationSize));
 
                         parents.add(new Parents(parent1, parent2));
+
                     }
+//                    System.out.println("NEW PARENTS");
                 }
                 case ROULETTE -> {
 
@@ -231,7 +239,7 @@ public class Algorithms {
                         probabilities[i] = probability;
                     }
 
-                    for (int i = 0; i < populationSize; i++) {
+                    for (int i = 0; i < populationSize/2; i++) {
 
                         double r = rand.nextDouble();
                         int index1 = 0;
@@ -258,70 +266,81 @@ public class Algorithms {
 
                         parents.add(new Parents(parent1, parent2));
                     }
-
+//                    System.out.println("NEW PARENTS");
                 }
             }
 
             population.clear();
+//            population.removeAllElements();
 
             for(Parents parentsPair: parents){
+//                System.out.println("CROSS");
                 population.addAll(parentsPair.cross());
             }
 
+            System.out.println("NEW POLULATION SIZE: "+population.size());
 
 
-
-            switch (mutationMethod){
-                case SWAP ->{
-                    for(Unit unit:population){
-                        if (mutationProbability < rand.nextDouble()) {
-                            int index = rand.nextInt(chromosomeSize);
-                            int i = rand.nextInt(unit.genotype.get(index).size());
-                            int j = rand.nextInt(unit.genotype.get(index).size());
-                            Vector<Integer> newGenotype = Utils.swap( unit.genotype.get(index), i ,j);
-
-                            int fitness = (int) Utils.calculateGoalFunction(newGenotype);
-                            unit.fenotype.set(index, fitness);
-                        }
-                    }
-                }
-                case INVERT ->{
-                    for(Unit unit:population){
-                        if (mutationProbability < rand.nextDouble()) {
-
-                            int index = rand.nextInt(chromosomeSize);
-                            int i = rand.nextInt(unit.genotype.get(index).size());
-                            int j = i;
-
-                            while(j <= i){
-                                j = rand.nextInt(unit.genotype.get(index).size());
-                            }
-                            Vector<Integer> newGenotype = Utils.invert( unit.genotype.get(index), i ,j);
-
-                            int fitness = (int) Utils.calculateGoalFunction(newGenotype);
-                            unit.fenotype.set(index, fitness);
-                        }
-                    }
-                }
-            }
-
+//            switch (mutationMethod){
+//                case SWAP ->{
+//                    for(Unit unit:population){
+//                        if (mutationProbability >= rand.nextDouble()) {
+////                            System.out.println("MUTATION SWAP");
+//                            int index = rand.nextInt(chromosomeSize);
+//                            int i = rand.nextInt(unit.genotype.get(index).size());
+//                            int j = rand.nextInt(unit.genotype.get(index).size());
+//                            Vector<Integer> newGenotype = Utils.swap( unit.genotype.get(index), i ,j);
+//
+//                            int fitness = (int) Utils.calculateGoalFunction(newGenotype);
+//                            unit.fenotype.set(index, fitness);
+//                        }
+//                    }
+//                }
+//                case INVERT ->{
+//                    for(Unit unit:population){
+//                        if (mutationProbability >= rand.nextDouble()) {
+////                            System.out.println("MUTATION INVERT");
+//                            int index = rand.nextInt(chromosomeSize);
+//                            int i = rand.nextInt(unit.genotype.get(index).size());
+//                            int j = i;
+//
+//                            while(j <= i){
+//                                j = rand.nextInt(unit.genotype.get(index).size());
+//                            }
+//                            Vector<Integer> newGenotype = Utils.invert( unit.genotype.get(index), i ,j);
+//
+//                            int fitness = (int) Utils.calculateGoalFunction(newGenotype);
+//                            unit.fenotype.set(index, fitness);
+//                        }
+//                    }
+//                }
+//            }
+            System.out.println("ITERATION: "+maxIteration);
             switch (end_condition) {
                 case ITERATION_NUMBER_EXCEEDED -> {
+
                     maxIteration--;
-                    if (maxIteration < 0)
+                    if (maxIteration < 0){
+                        System.out.println("ITER");
                         return bestSolutionGlobally;
+                    }
+
                 }
                 case MAX_TIME_EXCEEDED -> {
 
                     long end = System.currentTimeMillis();
-                    if (end - start > maxTimeMillis)
+                    if (end - start > maxTimeMillis){
+                        System.out.println("TIME");
                         return bestSolutionGlobally;
+                    }
 
                 }
                 case ITERATION_WITHOUT_IMPROVEMENT -> {
 
-                    if (maxIterationsWithoutImprovement - iterationWithoutImprovement == 0)
+                    if (maxIterationsWithoutImprovement - iterationWithoutImprovement == 0) {
+                        System.out.println("IMPROVE");
                         return bestSolutionGlobally;
+                    }
                 }
                 default -> {
                 }

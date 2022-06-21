@@ -2,7 +2,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.Vector;
-import Enum.*;
+import EnumPack.*;
 public class TabuTest {
 
     //baseIterationNumber - poczatkowa ilosc iteracji
@@ -342,7 +342,7 @@ public class TabuTest {
        optimalSolutions.add(2020);
 //       optimalSolutions.add(629);
 //       createData(fileNames, optimalSolutions, "maxIteration");
-       createData(fileNames, optimalSolutions, "tabuSize");
+//       createData(fileNames, optimalSolutions, "tabuSize");
 //       createData(fileNames, optimalSolutions, "maxTime");
 //       createData(fileNames, optimalSolutions, "envSize");
 //       createData(fileNames, optimalSolutions, "withoutImprove");
@@ -378,34 +378,34 @@ public class TabuTest {
 //        }
     }
 
-    public static void createData(String[] fileNames, Vector<Integer> optimalSolutions, String testMode) throws IOException {
-        int i = 0;
-        for (String file : fileNames) {
-            LoadDataTSP.loadData(file);
-            DataMatrix.matrix = LoadDataTSP.matrix;
-            DataMatrix.dimension = LoadDataTSP.dimension;
-            DataMatrix.format = LoadDataTSP.format;
-            DataMatrix.type = LoadDataTSP.type;
-
-            String filename =testMode+ "_TSPLIB_";
-            if (Objects.equals(DataMatrix.format, ""))
-                DataMatrix.format = "EUC";
-            filename += DataMatrix.format + ".txt";
-
-            FileWriter fileWriter = new FileWriter(filename);
-//            System.out.println(testMode);
-            //                    System.out.println("elo");
-            switch (testMode) {
-                case "maxIteration" -> solveAndWriteToFileForMaxIteration(fileWriter, 20, 10, 30, 100, optimalSolutions.get(i));
-                case "tabuSize" -> solveAndWriteToFileForTabuSize(fileWriter, 20, 5, 5, 40, optimalSolutions.get(i));
-                case "maxTime" -> solveAndWriteToFileForMaxTime(fileWriter, 20, 50, 50, 30, optimalSolutions.get(i));
-                case "envSize" -> solveAndWriteToFileForEnvSize(fileWriter, 20, 10, 10, 50, optimalSolutions.get(i));
-                case "withoutImprove" -> solveAndWriteToFileForMaxWithoutImpr(fileWriter, 20, 10, 30, 100, optimalSolutions.get(i));
-            }
-            LoadDataTSP.resetData();
-            i++;
-            fileWriter.close();
-
-        }
-    }
+//    public static void createData(String[] fileNames, Vector<Integer> optimalSolutions, String testMode) throws IOException {
+//        int i = 0;
+//        for (String file : fileNames) {
+//            LoadDataTSP.loadData(file);
+//            DataMatrix.matrix = LoadDataTSP.matrix;
+//            DataMatrix.dimension = LoadDataTSP.dimension;
+//            DataMatrix.format = LoadDataTSP.format;
+//            DataMatrix.type = LoadDataTSP.type;
+//
+//            String filename =testMode+ "_TSPLIB_";
+//            if (Objects.equals(DataMatrix.format, ""))
+//                DataMatrix.format = "EUC";
+//            filename += DataMatrix.format + ".txt";
+//
+//            FileWriter fileWriter = new FileWriter(filename);
+////            System.out.println(testMode);
+//            //                    System.out.println("elo");
+//            switch (testMode) {
+//                case "maxIteration" -> solveAndWriteToFileForMaxIteration(fileWriter, 20, 10, 30, 100, optimalSolutions.get(i));
+//                case "tabuSize" -> solveAndWriteToFileForTabuSize(fileWriter, 20, 5, 5, 40, optimalSolutions.get(i));
+//                case "maxTime" -> solveAndWriteToFileForMaxTime(fileWriter, 20, 50, 50, 30, optimalSolutions.get(i));
+//                case "envSize" -> solveAndWriteToFileForEnvSize(fileWriter, 20, 10, 10, 50, optimalSolutions.get(i));
+//                case "withoutImprove" -> solveAndWriteToFileForMaxWithoutImpr(fileWriter, 20, 10, 30, 100, optimalSolutions.get(i));
+//            }
+//            LoadDataTSP.resetData();
+//            i++;
+//            fileWriter.close();
+//
+//        }
+//    }
 }

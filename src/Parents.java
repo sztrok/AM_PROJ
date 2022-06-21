@@ -1,8 +1,6 @@
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Random;
-import java.util.Vector;
-import Enum.CrossoverMethod;
+import java.util.*;
+
+import EnumPack.CrossoverMethod;
 
 public class Parents {
 
@@ -19,22 +17,37 @@ public class Parents {
 
 
     public Vector<Unit> cross(){
+//        System.out.println("CX M: "+crossoverMethod);
         Unit childrenUnit1 = new Unit();
         Unit childrenUnit2 = new Unit();
-        int crossoverPoint1 = rand.nextInt(parent1.genotype.get(0).size());
-        int crossoverPoint2 = crossoverPoint1;
-
-        while(crossoverPoint2 <= crossoverPoint1){
-            crossoverPoint2 = rand.nextInt(parent1.genotype.get(0).size());
+        ArrayList<Integer> list = new ArrayList<>();
+        for(int i=0; i<parent1.genotype.get(0).size(); i++){
+            list.add(i);
         }
+        Collections.shuffle(list);
+        int crossoverPoint1 = list.get(0);
+        int crossoverPoint2 = list.get(1);
+        if(crossoverPoint1 > crossoverPoint2){
+            int temp = crossoverPoint1;
+            crossoverPoint1 = crossoverPoint2;
+            crossoverPoint2 = temp;
+        }
+//        int crossoverPoint1 = rand.nextInt(parent1.genotype.get(0).size());
+//        int crossoverPoint2 = crossoverPoint1;
+
+//        while(crossoverPoint2 <= crossoverPoint1){
+//            crossoverPoint2 = rand.nextInt(parent1.genotype.get(0).size());
+//            System.out.println("LOOP");
+//        }
 
         for(int i =0; i < chromosomeSize; i++){
             Vector<Vector<Integer>> result = new Vector<>();
 
             switch (crossoverMethod){
-                case PartiallyMappedCrossover -> result = partiallyMixedCrossover(parent1.genotype.get(i), parent2.genotype.get(i),
+                case PartiallyMappedCrossover -> result = partiallyMappedCrossover(parent1.genotype.get(i), parent2.genotype.get(i),
                         crossoverPoint1, crossoverPoint2);
-//                case OrderCrossover -> result = orderCross
+                case OrderCrossover -> result = orderCrossover(parent1.genotype.get(i), parent2.genotype.get(i),
+                        crossoverPoint1, crossoverPoint2);
             }
 
 
@@ -43,7 +56,7 @@ public class Parents {
             childrenUnit2.addChromosome(result.get(1));
         }
         Vector<Unit> children = new Vector<>();
-        if(crossProbability < rand.nextDouble()){
+        if(crossProbability >= rand.nextDouble()){
             children.add(childrenUnit1);
             children.add(childrenUnit2);
         }else{
@@ -59,7 +72,7 @@ public class Parents {
                                                             int crossoverPoint1, int crossoverPoint2){
         assert  crossoverPoint2 >crossoverPoint1;
 
-
+//        System.out.println("ORDER START");
         Vector<Integer> childrenChromosome1 = new Vector<>();
         Vector<Integer> childrenChromosome2 = new Vector<>();
 
@@ -134,13 +147,14 @@ public class Parents {
         Vector<Vector<Integer>>children =  new Vector<>();
         children.add(childrenChromosome1);
         children.add(childrenChromosome2);
+//        System.out.println("ORDER END");
         return  children;
     }
 
 
 
-   private Vector<Vector<Integer>> partiallyMixedCrossover(Vector<Integer> parentChromosome1, Vector<Integer> parentChromosome2,
-                                                          int crossoverPoint1, int crossoverPoint2){
+   private Vector<Vector<Integer>> partiallyMappedCrossover(Vector<Integer> parentChromosome1, Vector<Integer> parentChromosome2,
+                                                            int crossoverPoint1, int crossoverPoint2){
         assert  crossoverPoint2 >crossoverPoint1;
 
 

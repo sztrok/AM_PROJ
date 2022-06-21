@@ -1,4 +1,4 @@
-package Enum;
+package EnumPack;
 
 public enum EndCondition {
     ITERATION_NUMBER_EXCEEDED,
