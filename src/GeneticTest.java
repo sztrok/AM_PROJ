@@ -147,7 +147,9 @@ public class GeneticTest {
             prdResults.set(i, prdResults.get(i)/filenames.size());
         }
 
-
+        for(int i =0 ;i < prdResults.size();i ++){
+            System.out.println(populationSizes.get(i) + " " + prdResults.get(i));
+        }
 
     }
 

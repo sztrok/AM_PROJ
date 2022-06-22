@@ -262,7 +262,7 @@ public class Test {
 //                Integer.MAX_VALUE, Integer.MAX_VALUE, 6,0.7d, 200, 100))));
 
 //            GeneticTest.PRD_iterationNumber();
-            GeneticTest.prd_MutationProbability();
+//            GeneticTest.();
 //            GeneticTest.prd_crossoverMethod();
 //        Vector<Integer> v1 = new Vector<>();
 //        Vector<Integer> v2 = new Vector<>();
