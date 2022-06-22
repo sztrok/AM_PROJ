@@ -142,12 +142,12 @@ public class Test {
 
 //        Algorithms.twoOpt("CN");
 
-        LoadDataTSP.loadData("ftv70.atsp");
-        DataMatrix.format = LoadDataTSP.format;
-        DataMatrix.matrix = LoadDataTSP.matrix;
-        DataMatrix.type = LoadDataTSP.type;
-        DataMatrix.dimension = LoadDataTSP.dimension;
-//
+//        LoadDataTSP.loadData("ftv70.atsp");
+//        DataMatrix.format = LoadDataTSP.format;
+//        DataMatrix.matrix = LoadDataTSP.matrix;
+//        DataMatrix.type = LoadDataTSP.type;
+//        DataMatrix.dimension = LoadDataTSP.dimension;
+////
 //        Vector<Integer> x = Algorithms.twoOpt("CN");
 //        System.out.println(Utils.calculateGoalFunction(x));
 //        System.out.println(Utils.calculateGoalFunction(Algorithms.tabuSearch(Enum.EndCondition.ITERATION_WITHOUT_IMPROVEMENT, TabuExceed.REMOVE_FIRST_ELEMENT, "CN", 100, 10,null, "swap", 20, 10d,100000,1000,false,x )));
@@ -256,10 +256,14 @@ public class Test {
 //        }
 //        System.out.println(Utils.calculateGoalFunction( Algorithms.twoOpt("KRand")));
 //        System.out.println(Utils.calculateGoalFunction( Algorithms.twoOpt("KRand",800)));
-        System.out.println(Utils.calculatePRD(1950,Utils.calculateGoalFunction( Algorithms.geneticAlgorithm(5,1000,GeneratingStartingPopulationMethod.HEURISTIC_KRAND,500,
-                ParentSelectionMethod.RANDOM, CrossoverMethod.OrderCrossover, MutationMethod.INVERT,
-                0.1d,EndCondition.ITERATION_NUMBER_EXCEEDED, 10000,
-                Integer.MAX_VALUE, Integer.MAX_VALUE, 6,0.7d, 200, 100))));
+//        System.out.println(Utils.calculatePRD(1950,Utils.calculateGoalFunction( Algorithms.geneticAlgorithm(5,200,GeneratingStartingPopulationMethod.HEURISTIC_KRAND,1,
+//                ParentSelectionMethod.RANDOM, CrossoverMethod.OrderCrossover, MutationMethod.INVERT,
+//                0.1d,EndCondition.ITERATION_NUMBER_EXCEEDED, 10000,
+//                Integer.MAX_VALUE, Integer.MAX_VALUE, 6,0.7d, 200, 100))));
+
+//            GeneticTest.PRD_iterationNumber();
+            GeneticTest.prd_MutationProbability();
+//            GeneticTest.prd_crossoverMethod();
 //        Vector<Integer> v1 = new Vector<>();
 //        Vector<Integer> v2 = new Vector<>();
 //        v1.add(1);

@@ -113,23 +113,14 @@ public class GeneticTest {
         }
         Vector<Integer> populationSizes = new Vector<>();
 
-        for(int populationSize = 20; populationSize < 1000; populationSize += 200){
+
+        for(int populationSize = 20; populationSize <= 120; populationSize += 20){
 
             populationSizes.add(populationSize);
         }
 
-        Vector<Vector<Integer>> prdVector = new Vector<>();
 
-        for(int i =0; i < filenames.size(); i++){
-            Vector<Integer> v = new Vector<>();
-            for (int j = 0; j < populationSizes.size() ; j++) {
-                v.add(0);
-            }
-            prdVector.add(v);
-        }
-
-        for(int filenameIndex =0; filenameIndex < filenames.size(); filenameIndex++){
-
+        for(int filenameIndex = 0; filenameIndex < filenames.size();filenameIndex++){
             LoadDataTSP.resetData();
             LoadDataTSP.loadData(filenames.get(filenameIndex));
             DataMatrix.matrix = LoadDataTSP.matrix;
@@ -139,27 +130,23 @@ public class GeneticTest {
 
             for(int i =0 ; i <populationSizes.size(); i++) {
                 System.out.println(filenames.get(filenameIndex) + " " + populationSizes.get(i));
-
-                int prd = (int) Utils.calculatePRD(bestSolution.get(filenameIndex), Algorithms.geneticAlgorithm(5, populationSizes.get(i), GeneratingStartingPopulationMethod.HEURISTIC_KRAND, 1,
+                int prd = (int) Utils.calculatePRD(bestSolution.get(filenameIndex), Algorithms.geneticAlgorithm(2, populationSizes.get(i),
+                        GeneratingStartingPopulationMethod.HEURISTIC_KRAND, 1,
                         ParentSelectionMethod.RANDOM, CrossoverMethod.OrderCrossover, MutationMethod.SWAP,
-                        0.1d, EndCondition.ITERATION_NUMBER_EXCEEDED,500,
+                        0.1d, EndCondition.ITERATION_NUMBER_EXCEEDED, populationSizes.get(i),
                         Integer.MAX_VALUE, Integer.MAX_VALUE, 6, 0.7d, 2000, 100));
+
                 System.out.println("PRD " + prd);
                 System.out.println("best solution " + bestSolution.get(filenameIndex));
-                prdVector.get(filenameIndex).set(i, prd);
-//                prdResults.set(i, prdResults.get(i) + prd);
+                prdResults.set(i, prdResults.get(i) + prd);
+
             }
         }
-        //
-        for (int i = 0; i < prdVector.size(); i++) {
-            int sum =0;
-            for (int j = 0; j < prdVector.get(0).size() ; j++) {
-                sum += prdVector.get(j).get(i);
-            }
-            prdResults.set(i, sum/filenames.size());
+        System.out.println("PRD -POPULATION SIZE " + prdResults);
+        for (int i = 0; i < prdResults.size(); i++) {
+            prdResults.set(i, prdResults.get(i)/filenames.size());
         }
-        System.out.println("PRD-POPULATION SIZE " + prdResults);
-//
+
 
 
     }
@@ -333,7 +320,7 @@ public class GeneticTest {
 
             }
         }
-        System.out.println("PRD -ISLAND SIZE " + prdResults);
+        System.out.println("PRD - PARENT SELECTION METHOD " + prdResults);
         for (int i = 0; i < prdResults.size(); i++) {
             prdResults.set(i, prdResults.get(i)/filenames.size());
         }
@@ -346,8 +333,275 @@ public class GeneticTest {
 
 
 
-    public void time_crossoverMethod(){
+    public static void prd_crossoverMethod(){
+        Vector<String> filenames = new Vector<>();
+        Vector<Integer> bestSolution = new Vector<>();
 
+
+
+
+
+        filenames.add("gr21.tsp");
+        filenames.add("bays29.tsp");
+        filenames.add("dantzig42.tsp");
+        filenames.add("gr48.tsp");
+        filenames.add("berlin52.tsp");
+        filenames.add("gr120.tsp");
+
+        bestSolution.add(2707);
+        bestSolution.add(2020);
+        bestSolution.add(699);
+        bestSolution.add(5046);
+        bestSolution.add(7542);
+        bestSolution.add(6942);
+
+        Vector<Integer> prdResults = new Vector<>();
+
+
+        Vector<CrossoverMethod> crossoverMethods = new Vector<>();
+
+        crossoverMethods.add(CrossoverMethod.PartiallyMappedCrossover);
+        crossoverMethods.add(CrossoverMethod.OrderCrossover);
+
+        Vector<Vector<Integer>> prdVector = new Vector<>();
+        for(int i =0; i <  crossoverMethods.size(); i++){
+            prdVector.add(new Vector<>());
+
+        }
+
+
+
+        for(int filenameIndex = 0; filenameIndex < filenames.size();filenameIndex++){
+            LoadDataTSP.resetData();
+            LoadDataTSP.loadData(filenames.get(filenameIndex));
+            DataMatrix.matrix = LoadDataTSP.matrix;
+            DataMatrix.dimension = LoadDataTSP.dimension;
+            DataMatrix.format = LoadDataTSP.format;
+            DataMatrix.type = LoadDataTSP.type;
+
+            for(int i =0 ; i < crossoverMethods.size(); i++) {
+                System.out.println(filenames.get(filenameIndex) + " " + crossoverMethods.get(i));
+                int prd = (int) Utils.calculatePRD(bestSolution.get(filenameIndex), Algorithms.geneticAlgorithm(5, 300,
+                        GeneratingStartingPopulationMethod.HEURISTIC_KRAND, 1,
+                        ParentSelectionMethod.RANDOM,crossoverMethods.get(i), MutationMethod.SWAP,
+                        0.1d, EndCondition.ITERATION_NUMBER_EXCEEDED, 1000,
+                        Integer.MAX_VALUE, Integer.MAX_VALUE, 6, 0.7d, 2000, 100));
+
+                System.out.println("PRD " + prd);
+                System.out.println("best solution " + bestSolution.get(filenameIndex));
+                prdVector.get(i).add(prd);
+
+            }
+        }
+        for(int i =0; i < crossoverMethods.size(); i++){
+            System.out.println(crossoverMethods.get(i) + " " + prdVector.get(i));
+        }
+    }
+
+
+
+    public static void prd_mutationMethod(){
+        Vector<String> filenames = new Vector<>();
+        Vector<Integer> bestSolution = new Vector<>();
+
+
+
+
+
+        filenames.add("gr21.tsp");
+        filenames.add("bays29.tsp");
+        filenames.add("dantzig42.tsp");
+        filenames.add("gr48.tsp");
+        filenames.add("berlin52.tsp");
+        filenames.add("gr120.tsp");
+
+        bestSolution.add(2707);
+        bestSolution.add(2020);
+        bestSolution.add(699);
+        bestSolution.add(5046);
+        bestSolution.add(7542);
+        bestSolution.add(6942);
+
+        Vector<Integer> prdResults = new Vector<>();
+
+
+        Vector<MutationMethod> mutationMethods= new Vector<>();
+
+        mutationMethods.add(MutationMethod.SWAP);
+        mutationMethods.add(MutationMethod.INVERT);
+
+        Vector<Vector<Integer>> prdVector = new Vector<>();
+        for(int i =0; i <  mutationMethods.size(); i++){
+            prdVector.add(new Vector<>());
+
+        }
+
+
+
+        for(int filenameIndex = 0; filenameIndex < filenames.size();filenameIndex++){
+            LoadDataTSP.resetData();
+            LoadDataTSP.loadData(filenames.get(filenameIndex));
+            DataMatrix.matrix = LoadDataTSP.matrix;
+            DataMatrix.dimension = LoadDataTSP.dimension;
+            DataMatrix.format = LoadDataTSP.format;
+            DataMatrix.type = LoadDataTSP.type;
+
+            for(int i =0 ; i < mutationMethods.size(); i++) {
+                System.out.println(filenames.get(filenameIndex) + " " + mutationMethods.get(i));
+                int prd = (int) Utils.calculatePRD(bestSolution.get(filenameIndex), Algorithms.geneticAlgorithm(5, 300,
+                        GeneratingStartingPopulationMethod.HEURISTIC_KRAND, 1,
+                        ParentSelectionMethod.RANDOM,CrossoverMethod.OrderCrossover, mutationMethods.get(i),
+                        0.1d, EndCondition.ITERATION_NUMBER_EXCEEDED, 1000,
+                        Integer.MAX_VALUE, Integer.MAX_VALUE, 6, 0.7d, 2000, 100));
+
+                System.out.println("PRD " + prd);
+                System.out.println("best solution " + bestSolution.get(filenameIndex));
+                prdVector.get(i).add(prd);
+
+            }
+        }
+        for(int i =0; i < mutationMethods.size(); i++){
+            System.out.println(mutationMethods.get(i) + " " + prdVector.get(i));
+        }
+    }
+    //todo
+    //run this
+    public static void prd_MutationProbability(){
+
+        Vector<String> filenames = new Vector<>();
+        Vector<Integer> bestSolution = new Vector<>();
+
+        filenames.add("gr21.tsp");
+        filenames.add("bays29.tsp");
+        filenames.add("dantzig42.tsp");
+        filenames.add("gr48.tsp");
+        filenames.add("berlin52.tsp");
+        filenames.add("gr120.tsp");
+
+        bestSolution.add(2707);
+        bestSolution.add(2020);
+        bestSolution.add(699);
+        bestSolution.add(5046);
+        bestSolution.add(7542);
+        bestSolution.add(6942);
+
+
+        Vector<Integer> prdResults = new Vector<>();
+
+
+        Vector<Double> mutationProbability = new Vector<>();
+
+        for(double mutationProb = 0.0d; mutationProb < 0.8d; mutationProb += 0.1d ){
+
+            mutationProbability.add(mutationProb);
+        }
+
+
+        for(int i =0; i <  mutationProbability.size(); i++){
+            prdResults.add(0);
+
+        }
+        int totalPopulation = 800;
+
+        for(int filenameIndex = 0; filenameIndex < filenames.size();filenameIndex++){
+            LoadDataTSP.resetData();
+            LoadDataTSP.loadData(filenames.get(filenameIndex));
+            DataMatrix.matrix = LoadDataTSP.matrix;
+            DataMatrix.dimension = LoadDataTSP.dimension;
+            DataMatrix.format = LoadDataTSP.format;
+            DataMatrix.type = LoadDataTSP.type;
+
+            for(int i =0 ; i <mutationProbability.size(); i++) {
+                System.out.println(filenames.get(filenameIndex) + " " + mutationProbability.get(i));
+                int prd = (int) Utils.calculatePRD(bestSolution.get(filenameIndex), Algorithms.geneticAlgorithm(3, 300,
+                        GeneratingStartingPopulationMethod.HEURISTIC_KRAND, 1,
+                        ParentSelectionMethod.RANDOM, CrossoverMethod.OrderCrossover, MutationMethod.SWAP,
+                        mutationProbability.get(i), EndCondition.ITERATION_NUMBER_EXCEEDED, 1000,
+                        Integer.MAX_VALUE, Integer.MAX_VALUE, 6, 0.7d, 2000, 100));
+
+                System.out.println("PRD " + prd);
+                System.out.println("best solution " + bestSolution.get(filenameIndex));
+                prdResults.set(i, prdResults.get(i) + prd);
+
+            }
+        }
+
+        System.out.println("PRD -MUTATION PROB " + prdResults);
+
+        for (int i = 0; i < prdResults.size() ; i++) {
+            System.out.println(prdResults.get(i) + " " + mutationProbability.get(i));
+
+        }
+    }
+
+    //todo
+    //run this
+    public static void prd_crossProbability(){
+
+        Vector<String> filenames = new Vector<>();
+        Vector<Integer> bestSolution = new Vector<>();
+
+        filenames.add("gr21.tsp");
+        filenames.add("bays29.tsp");
+        filenames.add("dantzig42.tsp");
+        filenames.add("gr48.tsp");
+        filenames.add("berlin52.tsp");
+        filenames.add("gr120.tsp");
+
+        bestSolution.add(2707);
+        bestSolution.add(2020);
+        bestSolution.add(699);
+        bestSolution.add(5046);
+        bestSolution.add(7542);
+        bestSolution.add(6942);
+
+
+        Vector<Integer> prdResults = new Vector<>();
+
+
+        Vector<Double> crossoverProbability = new Vector<>();
+
+        for(double mutationProb = 0.4d; mutationProb <= 0.8d; mutationProb += 0.1d ){
+
+            crossoverProbability.add(mutationProb);
+        }
+
+
+        for(int i =0; i <  crossoverProbability.size(); i++){
+            prdResults.add(0);
+
+        }
+        int totalPopulation = 800;
+
+        for(int filenameIndex = 0; filenameIndex < filenames.size();filenameIndex++){
+            LoadDataTSP.resetData();
+            LoadDataTSP.loadData(filenames.get(filenameIndex));
+            DataMatrix.matrix = LoadDataTSP.matrix;
+            DataMatrix.dimension = LoadDataTSP.dimension;
+            DataMatrix.format = LoadDataTSP.format;
+            DataMatrix.type = LoadDataTSP.type;
+
+            for(int i =0 ; i <crossoverProbability.size(); i++) {
+                System.out.println(filenames.get(filenameIndex) + " " + crossoverProbability.get(i));
+                int prd = (int) Utils.calculatePRD(bestSolution.get(filenameIndex), Algorithms.geneticAlgorithm(3, 300,
+                        GeneratingStartingPopulationMethod.HEURISTIC_KRAND, 1,
+                        ParentSelectionMethod.RANDOM, CrossoverMethod.OrderCrossover, MutationMethod.SWAP,
+                        0.1d, EndCondition.ITERATION_NUMBER_EXCEEDED, 1000,
+                        Integer.MAX_VALUE, Integer.MAX_VALUE, 6, crossoverProbability.get(i), 2000, 100));
+
+                System.out.println("PRD " + prd);
+                System.out.println("best solution " + bestSolution.get(filenameIndex));
+                prdResults.set(i, prdResults.get(i) + prd);
+
+            }
+        }
+
+        System.out.println("PRD -CROSS PROB " + prdResults);
+
+        for (int i = 0; i < prdResults.size() ; i++) {
+            System.out.println(prdResults.get(i) + " " + crossoverProbability.get(i));
+
+        }
     }
 
 }
