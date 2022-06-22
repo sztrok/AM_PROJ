@@ -285,10 +285,10 @@ public class Algorithms {
             }
 //            System.out.println("BEST: "+best+" | WORST: "+worst);
             if ((worst / best) <= 1.05) {
-                System.out.println("RELOCATING...");
-                if(mutationProbability<=0.5d){
+//                System.out.println("RELOCATING...");
+
                     mutationProbability += 0.02d;
-                }
+
 //                if(mutationProbability>1.5d) return bestSolutionGlobally;
                 for (Vector<Unit> island : islands) {
                     Vector<Unit> relocatingPopulation = new Vector<>();
@@ -315,14 +315,14 @@ public class Algorithms {
 
 
                 if (iterationWithoutImprovement == iterationWithoutImprovementLimit) {
-                    System.out.println("PURGE");
+//                    System.out.println("PURGE");
                     int maxTime = 200;
                     for (; maxTime < 600; maxTime += 200) {
                         int value = (int) Utils.calculateGoalFunction(twoOpt("KRand", maxTime));
 //                        System.out.println(bestCostGlobally + " " + value);
 //                        System.out.println(bestCostGlobally / 1.5d + " " + bestCostGlobally * 1.1d);
                         if (bestCostGlobally / 1.5d <= value && bestCostGlobally * 1.1d >= value) {
-                            System.out.println("JAZDAAA");
+//                            System.out.println("JAZDAAA");
                             for(Vector<Unit> island : islands){
                                 for (int i = 0; i < 10; i++) {
 

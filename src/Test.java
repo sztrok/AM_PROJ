@@ -142,7 +142,7 @@ public class Test {
 
 //        Algorithms.twoOpt("CN");
 
-        LoadDataTSP.loadData("berlin52.tsp");
+        LoadDataTSP.loadData("ftv70.atsp");
         DataMatrix.format = LoadDataTSP.format;
         DataMatrix.matrix = LoadDataTSP.matrix;
         DataMatrix.type = LoadDataTSP.type;
@@ -256,10 +256,10 @@ public class Test {
 //        }
 //        System.out.println(Utils.calculateGoalFunction( Algorithms.twoOpt("KRand")));
 //        System.out.println(Utils.calculateGoalFunction( Algorithms.twoOpt("KRand",800)));
-        System.out.println(Utils.calculatePRD(7542,Utils.calculateGoalFunction( Algorithms.geneticAlgorithm(5,500,GeneratingStartingPopulationMethod.HEURISTIC_KRAND,1000,
+        System.out.println(Utils.calculatePRD(1950,Utils.calculateGoalFunction( Algorithms.geneticAlgorithm(5,1000,GeneratingStartingPopulationMethod.HEURISTIC_KRAND,500,
                 ParentSelectionMethod.RANDOM, CrossoverMethod.OrderCrossover, MutationMethod.INVERT,
-                0.2d,EndCondition.ITERATION_NUMBER_EXCEEDED, 5000,
-                Integer.MAX_VALUE, Integer.MAX_VALUE, 6,0.7d, 100, 40))));
+                0.1d,EndCondition.ITERATION_NUMBER_EXCEEDED, 10000,
+                Integer.MAX_VALUE, Integer.MAX_VALUE, 6,0.7d, 200, 100))));
 //        Vector<Integer> v1 = new Vector<>();
 //        Vector<Integer> v2 = new Vector<>();
 //        v1.add(1);
