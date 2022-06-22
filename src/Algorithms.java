@@ -286,7 +286,9 @@ public class Algorithms {
 //            System.out.println("BEST: "+best+" | WORST: "+worst);
             if ((worst / best) <= 1.05) {
                 System.out.println("RELOCATING...");
-                mutationProbability += 0.02d;
+                if(mutationProbability<=0.5d){
+                    mutationProbability += 0.02d;
+                }
 //                if(mutationProbability>1.5d) return bestSolutionGlobally;
                 for (Vector<Unit> island : islands) {
                     Vector<Unit> relocatingPopulation = new Vector<>();
@@ -315,20 +317,22 @@ public class Algorithms {
                 if (iterationWithoutImprovement == iterationWithoutImprovementLimit) {
                     System.out.println("PURGE");
                     int maxTime = 200;
-                    for (; maxTime < 1200; maxTime += 200) {
+                    for (; maxTime < 600; maxTime += 200) {
                         int value = (int) Utils.calculateGoalFunction(twoOpt("KRand", maxTime));
-                        System.out.println(bestCostGlobally + " " + value);
-                        System.out.println(bestCostGlobally / 1.5d + " " + bestCostGlobally * 1.1d);
+//                        System.out.println(bestCostGlobally + " " + value);
+//                        System.out.println(bestCostGlobally / 1.5d + " " + bestCostGlobally * 1.1d);
                         if (bestCostGlobally / 1.5d <= value && bestCostGlobally * 1.1d >= value) {
                             System.out.println("JAZDAAA");
-                            for (int i = 0; i < 10; i++) {
+                            for(Vector<Unit> island : islands){
+                                for (int i = 0; i < 10; i++) {
 
-                                islands.get(currentIsland).remove(populationSize - 1);
-                                Unit unit = new Unit();
-                                for (int j = 0; j < chromosomeSize; j++) {
-                                    unit.addChromosome(twoOpt("KRand", maxTime));
+                                    island.remove(0);
+                                    Unit unit = new Unit();
+                                    for (int j = 0; j < chromosomeSize; j++) {
+                                        unit.addChromosome(twoOpt("KRand", maxTime));
+                                    }
+                                    island.add(unit);
                                 }
-                                islands.get(currentIsland).add(unit);
                             }
                             iterationWithoutImprovement=0;
                             break;

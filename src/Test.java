@@ -256,10 +256,10 @@ public class Test {
 //        }
 //        System.out.println(Utils.calculateGoalFunction( Algorithms.twoOpt("KRand")));
 //        System.out.println(Utils.calculateGoalFunction( Algorithms.twoOpt("KRand",800)));
-        System.out.println(Utils.calculatePRD(7542,Utils.calculateGoalFunction( Algorithms.geneticAlgorithm(10,500,GeneratingStartingPopulationMethod.HEURISTIC_KRAND,1000,
-                ParentSelectionMethod.ROULETTE, CrossoverMethod.OrderCrossover, MutationMethod.INVERT,
+        System.out.println(Utils.calculatePRD(7542,Utils.calculateGoalFunction( Algorithms.geneticAlgorithm(5,500,GeneratingStartingPopulationMethod.HEURISTIC_KRAND,1000,
+                ParentSelectionMethod.RANDOM, CrossoverMethod.OrderCrossover, MutationMethod.INVERT,
                 0.2d,EndCondition.ITERATION_NUMBER_EXCEEDED, 5000,
-                Integer.MAX_VALUE, Integer.MAX_VALUE, 6,0.9d, 200, 40))));
+                Integer.MAX_VALUE, Integer.MAX_VALUE, 6,0.7d, 100, 40))));
 //        Vector<Integer> v1 = new Vector<>();
 //        Vector<Integer> v2 = new Vector<>();
 //        v1.add(1);
