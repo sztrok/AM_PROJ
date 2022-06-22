@@ -42,6 +42,311 @@ public class Algorithms {
 //        System.out.println(Collections.max(permutations));
 
     }
+    public static Vector<Integer> geneticAlgorithmGetBestCostAtPoints(int islandsNumb,Integer populationSize,
+                                                   GeneratingStartingPopulationMethod generatingStartingPopulationMethod,
+                                                   Integer kRandValue, ParentSelectionMethod parentSelectionMethod,
+                                                   CrossoverMethod crossoverMethod, MutationMethod mutationMethod,
+                                                   double mutationProbability,
+                                                   EndCondition end_condition, Integer maxIteration, Integer maxTimeMillis,
+                                                   Integer maxIterationsWithoutImprovement,
+                                                   int chromosomeSize,
+                                                   double crossProbability,int iterationWithoutImprovementLimit,
+                                                   int oldUnitsNumberAfterStagnation, Vector<Integer> pointsToCheck
+    ) {
+        double startingProb = mutationProbability;
+        long start = System.currentTimeMillis();
+        Vector<Integer> bestSolutionGlobally = new Vector<>();
+        int bestCostGlobally = Integer.MAX_VALUE;
+
+
+        Parents.chromosomeSize = chromosomeSize;
+        Parents.crossProbability = crossProbability;
+        Parents.crossoverMethod = crossoverMethod;
+        Random rand = new Random();
+        Vector<Vector<Unit>> islands = new Vector<>();
+        Vector<Vector<Unit>> relocation = new Vector<>();
+        for (int i = 0; i < islandsNumb; i++) {
+            islands.add(new Vector<Unit>());
+        }
+
+        Vector<Integer> costsAtGivenPoints = new Vector<>();
+        int costsIndex =0;
+//        Vector<Unit> population = new Vector<>();
+        int iterationWithoutImprovement = 0;
+        //generating starting population
+        for (int k = 0; k < islandsNumb; k++) {
+            for (int i = 0; i < populationSize; i++) {
+                Unit unit = new Unit();
+                for (int j = 0; j < chromosomeSize; j++) {
+
+                    switch (generatingStartingPopulationMethod) {
+
+                        case HEURISTIC_2OPT -> unit.addChromosome(Algorithms.twoOpt("kRand"));
+                        case HEURISTIC_CLOSEST_NEIGHBOUR -> unit.addChromosome(closestNeighbour(0));
+                        case HEURISTIC_EXTENDED_CLOSEST_NEIGHBOUR -> unit.addChromosome(extendedClosestNeighbour());
+                        case HEURISTIC_KRAND -> unit.addChromosome(kRandom(kRandValue));
+                    }
+                }
+                islands.get(k).add(unit);
+            }
+        }
+//        System.out.println(islands.get(0).size());
+//        System.out.println(islands.get(1).size());
+        int currentIsland = 0;
+
+        for (int z = 0; true; z++) {
+            if(z == pointsToCheck.get(costsIndex)){
+                costsAtGivenPoints.add(bestCostGlobally);
+            }
+            currentIsland %= 2;
+//            System.out.println("ISLAND: "+currentIsland);
+            for (int i = 0; i < islands.get(currentIsland).size(); i++) {
+                for (int j = 0; j < chromosomeSize; j++) {
+
+                    int fitness = (int) Utils.calculateGoalFunction(islands.get(currentIsland).get(i).genotype.get(j));
+                    islands.get(currentIsland).get(i).fenotype.set(j, fitness);
+                    if (fitness < bestCostGlobally) {
+                        iterationWithoutImprovement = 0;
+                        bestCostGlobally = fitness;
+                        bestSolutionGlobally = islands.get(currentIsland).get(i).genotype.get(j);
+//                        System.out.println("BEST SOLUTION: " + bestCostGlobally);
+                        mutationProbability = startingProb;
+                    }
+                }
+//                if(i==80){
+//                    System.out.println("EE "+(int) Utils.calculateGoalFunction(population.get(i).genotype.get(0)));
+//                }
+            }
+            double best = Integer.MAX_VALUE;
+            double worst = 0d;
+            for (Unit unit : islands.get(currentIsland)) {
+                if (unit.getFenotypeSum() > worst) {
+                    worst = unit.getFenotypeSum();
+                }
+                if (unit.getFenotypeSum() < best) {
+                    best = unit.getFenotypeSum();
+                }
+            }
+//            System.out.println("BEST: "+best+" | WORST: "+worst);
+            if ((worst / best) <= 1.05) {
+//                System.out.println("RELOCATING...");
+
+                mutationProbability += 0.02d;
+
+//                if(mutationProbability>1.5d) return bestSolutionGlobally;
+                for (Vector<Unit> island : islands) {
+                    Vector<Unit> relocatingPopulation = new Vector<>();
+                    for (int i = 0; i < populationSize / 2; i++) {
+                        relocatingPopulation.add(island.get(0));
+//                        relocation.get(islands.indexOf(island)).add(island.get(0));
+                        island.remove(0);
+                    }
+                    relocation.add(relocatingPopulation);
+                }
+                for (int i = 0; i < islandsNumb; i++) {
+                    if (i == islandsNumb - 1) {
+                        for (int j = 0; j < populationSize / 2; j++) {
+                            islands.get(0).add(relocation.get(i).get(j));
+                        }
+                    } else {
+                        for (int j = 0; j < populationSize / 2; j++) {
+                            islands.get(i + 1).add(relocation.get(i).get(j));
+                        }
+                    }
+                }
+            }
+            if (end_condition != EndCondition.ITERATION_WITHOUT_IMPROVEMENT) {
+
+
+                if (iterationWithoutImprovement == iterationWithoutImprovementLimit) {
+//                    System.out.println("PURGE");
+                    int maxTime = 200;
+                    for (; maxTime < 600; maxTime += 200) {
+                        int value = (int) Utils.calculateGoalFunction(twoOpt("KRand", maxTime));
+//                        System.out.println(bestCostGlobally + " " + value);
+//                        System.out.println(bestCostGlobally / 1.5d + " " + bestCostGlobally * 1.1d);
+                        if (bestCostGlobally / 1.5d <= value && bestCostGlobally * 1.1d >= value) {
+//                            System.out.println("JAZDAAA");
+                            for(Vector<Unit> island : islands){
+                                for (int i = 0; i < 10; i++) {
+
+                                    island.remove(0);
+                                    Unit unit = new Unit();
+                                    for (int j = 0; j < chromosomeSize; j++) {
+                                        unit.addChromosome(twoOpt("KRand", maxTime));
+                                    }
+                                    island.add(unit);
+                                }
+                            }
+                            iterationWithoutImprovement=0;
+                            break;
+                        }
+                    }
+                }
+
+                //wybieranie populacji rodzicow
+                Vector<Parents> parents = new Vector<>();
+
+
+                switch (parentSelectionMethod) {
+                    case RANDOM -> {
+                        ArrayList<Integer> list = new ArrayList<>();
+                        for (int i = 0; i < populationSize; i++) {
+                            list.add(i);
+                        }
+                        Collections.shuffle(list);
+//                    System.out.println("LIST: "+list.size());
+                        for (int i = 0; i < populationSize - 1; i += 2) {
+
+                            Unit parent1 = islands.get(currentIsland).get(list.get(i));
+                            Unit parent2 = islands.get(currentIsland).get(list.get(i + 1));
+
+                            parents.add(new Parents(parent1, parent2));
+
+                        }
+//                    System.out.println("NEW PARENTS");
+                    }
+                    case ROULETTE -> {
+
+                        double sumOfFitness = 0.0d;
+                        for (int i = 0; i < islands.get(currentIsland).size(); i++) {
+                            sumOfFitness += 1 / (double) islands.get(currentIsland).get(i).getFenotypeSum();
+                        }
+                        double[] probabilities = new double[islands.get(currentIsland).size()];
+                        double[] singleProb = new double[islands.get(currentIsland).size()];
+                        double sumOfProbabilities = 0.0d;
+                        probabilities[0] = 0.0d;
+                        for (int i = 0; i < islands.get(currentIsland).size() - 1; i++) {
+                            singleProb[i] = ((double) 1 / islands.get(currentIsland).get(i).getFenotypeSum()) / sumOfFitness;
+                            double probability = sumOfProbabilities + ((double) 1 / islands.get(currentIsland).get(i).getFenotypeSum()) / sumOfFitness;
+                            singleProb[i] = ((double) 1 / islands.get(currentIsland).get(i).getFenotypeSum()) / sumOfFitness;
+                            sumOfProbabilities += ((double) 1 / islands.get(currentIsland).get(i).getFenotypeSum()) / sumOfFitness;
+                            probabilities[i + 1] = probability;
+                        }
+
+                        for (int i = 0; i < populationSize / 2; i++) {
+
+                            double r = rand.nextDouble();
+
+                            int index1 = 0;
+                            for (int j = 0; j < populationSize; j++) {
+                                index1 = j;
+                                if (probabilities[j] > r) {
+                                    index1 = index1 - 1;
+
+                                    break;
+                                }
+                            }
+                            int index2 = -1;
+                            do {
+                                r = rand.nextDouble();
+//                            System.out.println("R2 " + r);
+                                for (int j = 0; j < populationSize; j++) {
+                                    index2 = j;
+
+                                    if (probabilities[j] > r) {
+                                        index2 = index2 - 1;
+
+                                        break;
+                                    }
+                                }
+
+                            } while (islands.get(currentIsland).get(index2).equals(islands.get(currentIsland).get(index1)));
+
+                            Unit parent1 = islands.get(currentIsland).get(index1);
+                            Unit parent2 = islands.get(currentIsland).get(index2);
+
+                            parents.add(new Parents(parent1, parent2));
+                        }
+//                    System.out.println("NEW PARENTS");
+                    }
+                }
+
+                islands.get(currentIsland).clear();
+//            population.removeAllElements();
+
+                for (Parents parentsPair : parents) {
+//                System.out.println("CROSS");
+                    islands.get(currentIsland).addAll(parentsPair.cross());
+                }
+
+//            System.out.println("NEW POLULATION SIZE: "+population.size());
+
+
+                switch (mutationMethod) {
+                    case SWAP -> {
+                        for (Unit unit : islands.get(currentIsland)) {
+                            if (mutationProbability >= rand.nextDouble()) {
+//                            System.out.println("MUTATION SWAP");
+                                for (int k = 0; k < chromosomeSize; k++) {
+                                    int i = rand.nextInt(unit.genotype.get(k).size());
+                                    int j = rand.nextInt(unit.genotype.get(k).size());
+                                    Vector<Integer> newGenotype = Utils.swap(unit.genotype.get(k), i, j);
+
+                                    int fitness = (int) Utils.calculateGoalFunction(newGenotype);
+                                    unit.fenotype.set(k, fitness);
+                                }
+                            }
+                        }
+                    }
+                    case INVERT -> {
+                        for (Unit unit : islands.get(currentIsland)) {
+                            if (mutationProbability >= rand.nextDouble()) {
+//                            System.out.println("MUTATION INVERT");
+                                for (int index = 0; index < chromosomeSize; index++) {
+                                    int i = rand.nextInt(unit.genotype.get(index).size() - 1);
+                                    int j = i;
+
+                                    while (j <= i) {
+                                        j = rand.nextInt(unit.genotype.get(index).size());
+                                    }
+                                    Vector<Integer> newGenotype = Utils.invert(unit.genotype.get(index), i, j);
+                                    int fitness = (int) Utils.calculateGoalFunction(newGenotype);
+                                    unit.fenotype.set(index, fitness);
+                                }
+                            }
+                        }
+                    }
+                }
+//            System.out.println("ITERATION: "+maxIteration);
+
+                currentIsland += 1;
+                switch (end_condition) {
+                    case ITERATION_NUMBER_EXCEEDED -> {
+
+                        maxIteration--;
+                        if (maxIteration < 0) {
+
+                            return costsAtGivenPoints;
+                        }
+
+                    }
+                    case MAX_TIME_EXCEEDED -> {
+
+                        long end = System.currentTimeMillis();
+                        if (end - start > maxTimeMillis) {
+                            System.out.println("TIME");
+                            return costsAtGivenPoints;
+                        }
+
+                    }
+                    case ITERATION_WITHOUT_IMPROVEMENT -> {
+
+                        if (maxIterationsWithoutImprovement - iterationWithoutImprovement == 0) {
+                            System.out.println("IMPROVE");
+                            return costsAtGivenPoints;
+                        }
+                    }
+                    default -> {
+                    }
+                    // code block
+                }
+                iterationWithoutImprovement++;
+            }
+
+//        return new Vector<>();
+        }
+    }
 
 
     public static Vector<Integer> closestNeighbour(int startNode){
@@ -265,7 +570,7 @@ public class Algorithms {
                         iterationWithoutImprovement = 0;
                         bestCostGlobally = fitness;
                         bestSolutionGlobally = islands.get(currentIsland).get(i).genotype.get(j);
-                        System.out.println("BEST SOLUTION: " + bestCostGlobally);
+//                       System.out.println("BEST SOLUTION: " + bestCostGlobally);
                         mutationProbability = startingProb;
                     }
                 }
@@ -472,7 +777,7 @@ public class Algorithms {
 
                         maxIteration--;
                         if (maxIteration < 0) {
-                            System.out.println("ITER");
+
                             return bestSolutionGlobally;
                         }
 
@@ -688,3 +993,5 @@ public class Algorithms {
 //        }
 //    }
 }
+
+
