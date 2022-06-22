@@ -254,12 +254,12 @@ public class Test {
 //           ;
 //            System.out.println(singleProb[i]);
 //        }
-
-
-        System.out.println(Utils.calculateGoalFunction( Algorithms.geneticAlgorithm(1000,GeneratingStartingPopulationMethod.HEURISTIC_KRAND,1000,
+//        System.out.println(Utils.calculateGoalFunction( Algorithms.twoOpt("KRand")));
+//        System.out.println(Utils.calculateGoalFunction( Algorithms.twoOpt("KRand",800)));
+        System.out.println(Utils.calculateGoalFunction( Algorithms.geneticAlgorithm(500,GeneratingStartingPopulationMethod.HEURISTIC_KRAND,1000,
                 ParentSelectionMethod.ROULETTE, CrossoverMethod.OrderCrossover, MutationMethod.INVERT,
                 0.2d,EndCondition.ITERATION_NUMBER_EXCEEDED, 500,
-                Integer.MAX_VALUE, Integer.MAX_VALUE, 6,0.9d, 200, 40)));
+                Integer.MAX_VALUE, Integer.MAX_VALUE, 6,0.9d, 50, 40)));
 //        Vector<Integer> v1 = new Vector<>();
 //        Vector<Integer> v2 = new Vector<>();
 //        v1.add(1);

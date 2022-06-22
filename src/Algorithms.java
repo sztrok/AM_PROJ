@@ -152,6 +152,57 @@ public class Algorithms {
     }
 
 
+    public static  Vector<Integer> twoOpt(String basicSolution, int maxTime){
+
+        long start = System.currentTimeMillis();
+        Vector<Integer> solution = switch (basicSolution) {
+            case "KRand" -> kRandom(1000);
+            case "CN" -> closestNeighbour(Utils.rand.nextInt(DataMatrix.dimension));
+            case "CNE" -> extendedClosestNeighbour();
+            default ->  null;
+        };
+
+        //GF = Goal Function
+
+        Vector<Integer> currentSolution = new Vector<>();
+        Vector<Integer> tempSolution;
+
+        long currentGFValue = Utils.calculateGoalFunction(solution);
+        long smallestGFValue = 0;
+
+        while(smallestGFValue < currentGFValue){
+            long end = System.currentTimeMillis();
+            if(end-start > maxTime){
+                return  currentSolution;
+            }
+            currentGFValue = Utils.calculateGoalFunction(solution);
+            currentSolution = solution;
+            smallestGFValue = currentGFValue;
+
+            for(int i =0; i < DataMatrix.dimension; i++){
+                for(int j = i + 1; j < DataMatrix.dimension; j++){
+                    for(int k =0; k < (j-i)/2 + 1 ; k++){
+
+                        tempSolution = new Vector<>(currentSolution);
+
+                        int temp = tempSolution.get(i + k);
+                        tempSolution.set(i + k, tempSolution.get(j - k));
+                        tempSolution.set(j - k, temp);
+
+                        long possibleGFValue = Utils.calculateGoalFunction(tempSolution);
+
+
+                        if(possibleGFValue < smallestGFValue){
+                            smallestGFValue = possibleGFValue;
+                            solution = tempSolution;
+                        }
+                    }
+                }
+            }
+        }
+        return solution;
+    }
+
     public static Vector<Integer> geneticAlgorithm(Integer populationSize,
                                                    GeneratingStartingPopulationMethod generatingStartingPopulationMethod,
                                                    Integer kRandValue, ParentSelectionMethod parentSelectionMethod,
@@ -210,37 +261,61 @@ public class Algorithms {
             if(end_condition != EndCondition.ITERATION_WITHOUT_IMPROVEMENT) {
 
 
-                if (iterationWithoutImprovement == iterationWithoutImprovementLimit){
+
+                if (iterationWithoutImprovement == iterationWithoutImprovementLimit) {
                     System.out.println("PURGE");
-                    population.sort(new Comparator<Unit>() {
-                        @Override
-                        public int compare(Unit o1, Unit o2) {
-                            return o1.getFenotypeSum() - o2.getFenotypeSum();
-                        }
-                    });
+                    int maxTime = 200;
+                    for(; maxTime < 1200;maxTime+=200 ) {
+                        int value = (int) Utils.calculateGoalFunction(twoOpt("KRand", maxTime));
+                        System.out.println(bestCostGlobally + " " + value);
+                        System.out.println(bestCostGlobally / 1.5d + " " + bestCostGlobally * 1.1d);
+                        if (bestCostGlobally / 1.5d <= value && bestCostGlobally * 1.1d >= value) {
+                            System.out.println("JAZDAAA");
+                            for (int i = 0; i < 10; i++) {
 
-                    iterationWithoutImprovement =0;
-                    for(int i = oldUnitsNumberAfterStagnation; i < population.size() ; i++) {
-
-                        population.remove(populationSize-1);
-
-                        Unit unit = new Unit();
-                        for (int j = 0; j < chromosomeSize; j++) {
-
-                            switch (generatingStartingPopulationMethod) {
-
-                                case HEURISTIC_2OPT -> unit.addChromosome(Algorithms.twoOpt("KRand"));
-                                case HEURISTIC_CLOSEST_NEIGHBOUR -> unit.addChromosome(closestNeighbour(0));
-                                case HEURISTIC_EXTENDED_CLOSEST_NEIGHBOUR -> unit.addChromosome(extendedClosestNeighbour());
-                                case HEURISTIC_KRAND -> unit.addChromosome(kRandom(kRandValue));
+                                population.remove(populationSize - 1);
+                                Unit unit = new Unit();
+                                for (int j = 0; j < chromosomeSize; j++) {
+                                    unit.addChromosome(twoOpt("KRand", maxTime));
+                                }
+                                population.add(unit);
                             }
+                            break;
                         }
-                        population.add(unit);
                     }
-
-
-
                 }
+
+//                if (iterationWithoutImprovement == iterationWithoutImprovementLimit){
+//                    System.out.println("PURGE");
+//                    population.sort(new Comparator<Unit>() {
+//                        @Override
+//                        public int compare(Unit o1, Unit o2) {
+//                            return o1.getFenotypeSum() - o2.getFenotypeSum();
+//                        }
+//                    });
+//
+//                    iterationWithoutImprovement =0;
+//                    for(int i = oldUnitsNumberAfterStagnation; i < population.size() ; i++) {
+//
+//                        population.remove(populationSize-1);
+//
+//                        Unit unit = new Unit();
+//                        for (int j = 0; j < chromosomeSize; j++) {
+//
+//                            switch (generatingStartingPopulationMethod) {
+//
+//                                case HEURISTIC_2OPT -> unit.addChromosome(Algorithms.twoOpt("KRand"));
+//                                case HEURISTIC_CLOSEST_NEIGHBOUR -> unit.addChromosome(closestNeighbour(0));
+//                                case HEURISTIC_EXTENDED_CLOSEST_NEIGHBOUR -> unit.addChromosome(extendedClosestNeighbour());
+//                                case HEURISTIC_KRAND -> unit.addChromosome(kRandom(kRandValue));
+//                            }
+//                        }
+//                        population.add(unit);
+//                    }
+//
+//
+//
+//                }
             }
             //wybieranie populacji rodzicow
             Vector<Parents> parents = new Vector<>();
