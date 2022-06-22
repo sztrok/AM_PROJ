@@ -1,3 +1,4 @@
+import java.sql.SQLOutput;
 import java.util.*;
 
 import EnumPack.*;
@@ -151,6 +152,57 @@ public class Algorithms {
     }
 
 
+    public static  Vector<Integer> twoOpt(String basicSolution, int maxTime){
+
+        long start = System.currentTimeMillis();
+        Vector<Integer> solution = switch (basicSolution) {
+            case "KRand" -> kRandom(1000);
+            case "CN" -> closestNeighbour(Utils.rand.nextInt(DataMatrix.dimension));
+            case "CNE" -> extendedClosestNeighbour();
+            default ->  null;
+        };
+
+        //GF = Goal Function
+
+        Vector<Integer> currentSolution = new Vector<>();
+        Vector<Integer> tempSolution;
+
+        long currentGFValue = Utils.calculateGoalFunction(solution);
+        long smallestGFValue = 0;
+
+        while(smallestGFValue < currentGFValue){
+            long end = System.currentTimeMillis();
+            if(end-start > maxTime){
+                return  currentSolution;
+            }
+            currentGFValue = Utils.calculateGoalFunction(solution);
+            currentSolution = solution;
+            smallestGFValue = currentGFValue;
+
+            for(int i =0; i < DataMatrix.dimension; i++){
+                for(int j = i + 1; j < DataMatrix.dimension; j++){
+                    for(int k =0; k < (j-i)/2 + 1 ; k++){
+
+                        tempSolution = new Vector<>(currentSolution);
+
+                        int temp = tempSolution.get(i + k);
+                        tempSolution.set(i + k, tempSolution.get(j - k));
+                        tempSolution.set(j - k, temp);
+
+                        long possibleGFValue = Utils.calculateGoalFunction(tempSolution);
+
+
+                        if(possibleGFValue < smallestGFValue){
+                            smallestGFValue = possibleGFValue;
+                            solution = tempSolution;
+                        }
+                    }
+                }
+            }
+        }
+        return solution;
+    }
+
     public static Vector<Integer> geneticAlgorithm(Integer populationSize,
                                                    GeneratingStartingPopulationMethod generatingStartingPopulationMethod,
                                                    Integer kRandValue, ParentSelectionMethod parentSelectionMethod,
@@ -159,7 +211,8 @@ public class Algorithms {
                                                    EndCondition end_condition, Integer maxIteration, Integer maxTimeMillis,
                                                    Integer maxIterationsWithoutImprovement,
                                                    int chromosomeSize,
-                                                   double crossProbability
+                                                   double crossProbability,int iterationWithoutImprovementLimit,
+                                                   int oldUnitsNumberAfterStagnation
                                                    ){
         long start = System.currentTimeMillis();
         Vector<Integer> bestSolutionGlobally = new Vector<>();
@@ -179,7 +232,7 @@ public class Algorithms {
 
                 switch (generatingStartingPopulationMethod) {
 
-                    case HEURISTIC_2OPT -> unit.addChromosome(Algorithms.twoOpt("kRand"));
+                    case HEURISTIC_2OPT -> unit.addChromosome(Algorithms.twoOpt("KRand"));
                     case HEURISTIC_CLOSEST_NEIGHBOUR -> unit.addChromosome(closestNeighbour(0));
                     case HEURISTIC_EXTENDED_CLOSEST_NEIGHBOUR -> unit.addChromosome(extendedClosestNeighbour());
                     case HEURISTIC_KRAND -> unit.addChromosome(kRandom(kRandValue));
@@ -189,7 +242,7 @@ public class Algorithms {
         }
         System.out.println("BEST SOLUTION: "+bestCostGlobally);
         for(int z =0; true; z++) {
-
+            System.out.println("z= " + z);
 
             for(int i =0; i < population.size(); i++){
                 for(int j =0; j< chromosomeSize; j++){
@@ -201,14 +254,69 @@ public class Algorithms {
                         bestCostGlobally = fitness;
                         bestSolutionGlobally = population.get(i).genotype.get(j);
                         System.out.println("BEST SOLUTION: "+bestCostGlobally);
+                        System.out.println("iter " + z);
                     }
                 }
-                if(i==80){
-                    System.out.println("EE "+(int) Utils.calculateGoalFunction(population.get(i).genotype.get(0)));
-                }
             }
+            if(end_condition != EndCondition.ITERATION_WITHOUT_IMPROVEMENT) {
 
 
+
+                if (iterationWithoutImprovement == iterationWithoutImprovementLimit) {
+                    System.out.println("PURGE");
+                    int maxTime = 200;
+                    for(; maxTime < 1200;maxTime+=200 ) {
+                        int value = (int) Utils.calculateGoalFunction(twoOpt("KRand", maxTime));
+                        System.out.println(bestCostGlobally + " " + value);
+                        System.out.println(bestCostGlobally / 1.5d + " " + bestCostGlobally * 1.1d);
+                        if (bestCostGlobally / 1.5d <= value && bestCostGlobally * 1.1d >= value) {
+                            System.out.println("JAZDAAA");
+                            for (int i = 0; i < 10; i++) {
+
+                                population.remove(populationSize - 1);
+                                Unit unit = new Unit();
+                                for (int j = 0; j < chromosomeSize; j++) {
+                                    unit.addChromosome(twoOpt("KRand", maxTime));
+                                }
+                                population.add(unit);
+                            }
+                            break;
+                        }
+                    }
+                }
+
+//                if (iterationWithoutImprovement == iterationWithoutImprovementLimit){
+//                    System.out.println("PURGE");
+//                    population.sort(new Comparator<Unit>() {
+//                        @Override
+//                        public int compare(Unit o1, Unit o2) {
+//                            return o1.getFenotypeSum() - o2.getFenotypeSum();
+//                        }
+//                    });
+//
+//                    iterationWithoutImprovement =0;
+//                    for(int i = oldUnitsNumberAfterStagnation; i < population.size() ; i++) {
+//
+//                        population.remove(populationSize-1);
+//
+//                        Unit unit = new Unit();
+//                        for (int j = 0; j < chromosomeSize; j++) {
+//
+//                            switch (generatingStartingPopulationMethod) {
+//
+//                                case HEURISTIC_2OPT -> unit.addChromosome(Algorithms.twoOpt("KRand"));
+//                                case HEURISTIC_CLOSEST_NEIGHBOUR -> unit.addChromosome(closestNeighbour(0));
+//                                case HEURISTIC_EXTENDED_CLOSEST_NEIGHBOUR -> unit.addChromosome(extendedClosestNeighbour());
+//                                case HEURISTIC_KRAND -> unit.addChromosome(kRandom(kRandValue));
+//                            }
+//                        }
+//                        population.add(unit);
+//                    }
+//
+//
+//
+//                }
+            }
             //wybieranie populacji rodzicow
             Vector<Parents> parents = new Vector<>();
 
@@ -220,7 +328,8 @@ public class Algorithms {
                         list.add(i);
                     }
                     Collections.shuffle(list);
-                    for (int i = 0; i < populationSize -1; i++) {
+//                    System.out.println("LIST: "+list.size());
+                    for (int i = 0; i < populationSize -1; i+=2) {
 
                         Unit parent1 = population.get(list.get(i));
                         Unit parent2 = population.get(list.get(i+1));
@@ -228,43 +337,67 @@ public class Algorithms {
                         parents.add(new Parents(parent1, parent2));
 
                     }
+//                    System.out.println("PARENTS SIZE: "+parents.size());
 //                    System.out.println("NEW PARENTS");
                 }
                 case ROULETTE -> {
 
-                    int sumOfFitness = 0;
-                    for (int i = 0; i < populationSize; i++) {
-                        sumOfFitness += population.get(i).getFenotypeSum();
+                    double sumOfFitness = 0.0d;
+                    for (int i = 0; i < population.size(); i++) {
+                        sumOfFitness += 1/ (double) population.get(i).getFenotypeSum();
                     }
-                    double[] probabilities = new double[populationSize];
+                    double[] probabilities = new double[population.size()];
+                    double[] singleProb = new double[population.size()];
                     double sumOfProbabilities = 0.0d;
-                    for (int i = 0; i < populationSize; i++) {
-                        double probability = sumOfProbabilities + (double) population.get(i).getFenotypeSum() / sumOfFitness;
-                        sumOfProbabilities += probability;
-                        probabilities[i] = probability;
+                    probabilities[0] = 0.0d;
+                    for (int i = 0; i < population.size() - 1; i++) {
+                        singleProb[i] =  ((double)  1/population.get(i).getFenotypeSum())/sumOfFitness;
+                        double probability =  sumOfProbabilities + ((double)  1/population.get(i).getFenotypeSum())/sumOfFitness ;
+                        singleProb[i] =((double)  1/population.get(i).getFenotypeSum())/sumOfFitness;
+                        sumOfProbabilities += ((double)  1/population.get(i).getFenotypeSum())/sumOfFitness;
+                        probabilities[i+1] = probability;
                     }
-
+//                    System.out.println("XXXXXXXXXXXXXXXXX");
+//                    for(double x: singleProb){
+//                        System.out.println(x);
+//                    }
+//                    System.out.println("XXXXXXXXXXXXXXXXX");
+//                    System.out.println("YYYYYYYYYYYYYYYYYY");
+//                    for(Unit x: population){
+//                        System.out.println(x.getFenotypeSum());
+//                    }
+//                    System.out.println("YYYYYYYYYYYYYYYYYY");
                     for (int i = 0; i < populationSize/2; i++) {
 
                         double r = rand.nextDouble();
+
                         int index1 = 0;
                         for (int j = 0; j < populationSize; j++) {
                             index1 = j;
-                            if (probabilities[j] < r) {
+                            if (probabilities[j] > r) {
+                                index1 = index1-1;
+
                                 break;
                             }
                         }
+
+
+
                         int index2 = -1;
                         do {
-                            r = rand.nextDouble();
-
+                             r = rand.nextDouble();
+//                            System.out.println("R2 " + r);
                             for (int j = 0; j < populationSize; j++) {
                                 index2 = j;
-                                if (probabilities[j] < r) {
+
+                                if (probabilities[j] > r) {
+                                    index2 = index2-1;
+
                                     break;
                                 }
                             }
-                        }while(index2 == index1);
+
+                        }while(population.get(index2).equals(population.get(index1)));
 
                         Unit parent1 = population.get(index1);
                         Unit parent2 = population.get(index2);
@@ -283,44 +416,48 @@ public class Algorithms {
                 population.addAll(parentsPair.cross());
             }
 
-            System.out.println("NEW POLULATION SIZE: "+population.size());
+//            System.out.println("NEW POLULATION SIZE: "+population.size());
 
 
-//            switch (mutationMethod){
-//                case SWAP ->{
-//                    for(Unit unit:population){
-//                        if (mutationProbability >= rand.nextDouble()) {
-////                            System.out.println("MUTATION SWAP");
-//                            int index = rand.nextInt(chromosomeSize);
-//                            int i = rand.nextInt(unit.genotype.get(index).size());
-//                            int j = rand.nextInt(unit.genotype.get(index).size());
-//                            Vector<Integer> newGenotype = Utils.swap( unit.genotype.get(index), i ,j);
-//
-//                            int fitness = (int) Utils.calculateGoalFunction(newGenotype);
-//                            unit.fenotype.set(index, fitness);
-//                        }
-//                    }
-//                }
-//                case INVERT ->{
-//                    for(Unit unit:population){
-//                        if (mutationProbability >= rand.nextDouble()) {
-////                            System.out.println("MUTATION INVERT");
-//                            int index = rand.nextInt(chromosomeSize);
-//                            int i = rand.nextInt(unit.genotype.get(index).size());
-//                            int j = i;
-//
-//                            while(j <= i){
-//                                j = rand.nextInt(unit.genotype.get(index).size());
-//                            }
-//                            Vector<Integer> newGenotype = Utils.invert( unit.genotype.get(index), i ,j);
-//
-//                            int fitness = (int) Utils.calculateGoalFunction(newGenotype);
-//                            unit.fenotype.set(index, fitness);
-//                        }
-//                    }
-//                }
-//            }
-            System.out.println("ITERATION: "+maxIteration);
+            switch (mutationMethod){
+                case SWAP ->{
+                    for(Unit unit:population){
+                        if (mutationProbability >= rand.nextDouble()) {
+//                            System.out.println("MUTATION SWAP");
+                           for(int k =0; k < chromosomeSize; k ++) {
+                               int i = rand.nextInt(unit.genotype.get(k).size());
+                               int j = rand.nextInt(unit.genotype.get(k).size());
+                               Vector<Integer> newGenotype = Utils.swap(unit.genotype.get(k), i, j);
+
+                               int fitness = (int) Utils.calculateGoalFunction(newGenotype);
+                               unit.genotype.set(k, newGenotype);
+                               unit.fenotype.set(k, fitness);
+                           }
+                        }
+                    }
+                }
+                case INVERT ->{
+                    for(Unit unit:population){
+                        if (mutationProbability >= rand.nextDouble()) {
+//                            System.out.println("MUTATION INVERT");
+                            for(int index =0; index< chromosomeSize; index++) {
+                                int i = rand.nextInt(unit.genotype.get(index).size() - 1);
+                                int j = i;
+
+                                while (j <= i) {
+                                    j = rand.nextInt(unit.genotype.get(index).size());
+                                }
+                                Vector<Integer> newGenotype = Utils.invert(unit.genotype.get(index), i, j);
+                                unit.genotype.set(index, newGenotype);
+                                int fitness = (int) Utils.calculateGoalFunction(newGenotype);
+                                unit.fenotype.set(index, fitness);
+
+                            }
+                        }
+                    }
+                }
+            }
+//            System.out.println("ITERATION: "+maxIteration);
             switch (end_condition) {
                 case ITERATION_NUMBER_EXCEEDED -> {
 

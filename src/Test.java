@@ -1,4 +1,6 @@
 import java.io.IOException;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Vector;
 
 import EnumPack.*;
@@ -180,7 +182,84 @@ public class Test {
 //        Vector<Vector<Integer>> k  = p.partiallyMappedCrossover(x,y,0,4);
 //
 //        System.out.println(k);
-        System.out.println("RES: "+Utils.calculateGoalFunction(Algorithms.geneticAlgorithm(100,GeneratingStartingPopulationMethod.HEURISTIC_KRAND,1000, ParentSelectionMethod.RANDOM, CrossoverMethod.OrderCrossover,MutationMethod.SWAP,0.1d,EndCondition.ITERATION_NUMBER_EXCEEDED, 5000, Integer.MAX_VALUE, Integer.MAX_VALUE, 20,0.9d)));
+
+
+
+//        Unit u1 = new Unit();
+//        Vector<Integer> a = Algorithms.kRandom(1000);
+//        Vector<Integer> b = Algorithms.kRandom(1000);
+//        Vector<Integer> c = Algorithms.kRandom(1000);
+//
+//        u1.addChromosome(a);
+//        u1.addChromosome(b);
+//        u1.addChromosome(c);
+//
+//        Unit u2 = new Unit();
+//        Vector<Integer> d = Algorithms.kRandom(1000);
+//        Vector<Integer> e = Algorithms.kRandom(1000);
+//        Vector<Integer> f = Algorithms.kRandom(1000);
+//        u2.addChromosome(d);
+//        u2.addChromosome(e);
+//        u2.addChromosome(f);
+//        Vector<Unit> x = new Vector<>();
+//
+//        x.add(u1);
+//        x.add(u2);
+//        System.out.println(u1.fenotypeSum);
+//        System.out.println(u2.fenotypeSum);
+//
+//
+//        x.sort(new Comparator<Unit>() {
+//            @Override
+//            public int compare(Unit o1, Unit o2) {
+//                return o1.fenotypeSum - o2.fenotypeSum;
+//            }
+//        });
+//       System.out.println(x.get(0).fenotypeSum + " " +x.get(1).fenotypeSum);
+//    System.out.println("RES: "+Utils.calculateGoalFunction(
+
+
+//
+//        Vector<Unit> population = new Vector<>();
+//        Unit u1 = new Unit();
+//        u1.fenotypeSum = 100;
+//        Unit u2 = new Unit();
+//        u2.fenotypeSum = 100;
+//        Unit u3 = new Unit();
+//        u3.fenotypeSum = 400;
+//        population.add(u1);
+//        population.add(u2);
+//        population.add(u3);
+//
+//        double sumOfFitness = 0.0d;
+//        for (int i = 0; i < population.size(); i++) {
+//            sumOfFitness += 1/ (double) population.get(i).fenotypeSum;
+//        }
+//        double[] probabilities = new double[population.size()];
+//        double[] singleProb = new double[population.size()];
+//
+//        double sumOfProbabilities = 0.0d;
+//        probabilities[0] = 0.0d;
+//        for (int i = 0; i < population.size() - 1; i++) {
+//
+//            double probability =  sumOfProbabilities + ((double)  1/population.get(i).fenotypeSum)/sumOfFitness ;
+//            sumOfProbabilities += probability;
+//            probabilities[i+1] = probability;
+//        }
+//        for(int i =0; i < probabilities.length; i++ ){
+//            System.out.println(probabilities[i]);
+//
+//        }
+//        for(int i =0; i < probabilities.length; i++ ){
+//           ;
+//            System.out.println(singleProb[i]);
+//        }
+//        System.out.println(Utils.calculateGoalFunction( Algorithms.twoOpt("KRand")));
+//        System.out.println(Utils.calculateGoalFunction( Algorithms.twoOpt("KRand",800)));
+        System.out.println(Utils.calculateGoalFunction( Algorithms.geneticAlgorithm(500,GeneratingStartingPopulationMethod.HEURISTIC_KRAND,1000,
+                ParentSelectionMethod.ROULETTE, CrossoverMethod.OrderCrossover, MutationMethod.INVERT,
+                0.2d,EndCondition.ITERATION_NUMBER_EXCEEDED, 500,
+                Integer.MAX_VALUE, Integer.MAX_VALUE, 6,0.9d, 50, 40)));
 //        Vector<Integer> v1 = new Vector<>();
 //        Vector<Integer> v2 = new Vector<>();
 //        v1.add(1);
