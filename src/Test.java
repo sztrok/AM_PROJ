@@ -140,7 +140,7 @@ public class Test {
 
 //        Algorithms.twoOpt("CN");
 
-        LoadDataTSP.loadData("berlin52.tsp");
+        LoadDataTSP.loadData("ftv70.atsp");
         DataMatrix.format = LoadDataTSP.format;
         DataMatrix.matrix = LoadDataTSP.matrix;
         DataMatrix.type = LoadDataTSP.type;
@@ -180,7 +180,10 @@ public class Test {
 //        Vector<Vector<Integer>> k  = p.partiallyMappedCrossover(x,y,0,4);
 //
 //        System.out.println(k);
-        System.out.println("RES: "+Utils.calculateGoalFunction(Algorithms.geneticAlgorithm(100,GeneratingStartingPopulationMethod.HEURISTIC_KRAND,1000, ParentSelectionMethod.RANDOM, CrossoverMethod.OrderCrossover,MutationMethod.SWAP,0.1d,EndCondition.ITERATION_NUMBER_EXCEEDED, 5000, Integer.MAX_VALUE, Integer.MAX_VALUE, 20,0.9d)));
+
+        long result = Utils.calculateGoalFunction(Algorithms.geneticAlgorithm(
+                5,2000,GeneratingStartingPopulationMethod.HEURISTIC_KRAND,1000, ParentSelectionMethod.RANDOM, CrossoverMethod.PartiallyMappedCrossover,MutationMethod.INVERT,0.05d,EndCondition.ITERATION_NUMBER_EXCEEDED, 10000, Integer.MAX_VALUE, Integer.MAX_VALUE, 6,0.7d));
+        System.out.println("PRD: "+Utils.calculatePRD(1950,result));
 //        Vector<Integer> v1 = new Vector<>();
 //        Vector<Integer> v2 = new Vector<>();
 //        v1.add(1);

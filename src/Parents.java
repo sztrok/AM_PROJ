@@ -17,6 +17,8 @@ public class Parents {
 
 
     public Vector<Unit> cross(){
+       Random random = new Random();
+       boolean transcription = false;
 //        System.out.println("CX M: "+crossoverMethod);
         Unit childrenUnit1 = new Unit();
         Unit childrenUnit2 = new Unit();
@@ -43,56 +45,74 @@ public class Parents {
         Vector<Unit> children = new Vector<>();
         if(crossProbability >= rand.nextDouble()){
 
+            if(random.nextDouble() < 0.8d){
+                transcription = true;
+                Vector<Integer> parent1Best =  parent1.genotype.get( parent1.fenotype.indexOf( Collections.min(parent1.fenotype)));
+                Vector<Integer> parent1Worst =  parent1.genotype.get( parent1.fenotype.indexOf( Collections.max(parent1.fenotype)));
+                Vector<Integer> parent2Best =  parent2.genotype.get( parent2.fenotype.indexOf( Collections.min(parent2.fenotype)));
+                Vector<Integer> parent2Worst =  parent2.genotype.get( parent2.fenotype.indexOf( Collections.max(parent2.fenotype)));
 
-            Vector<Integer> parent1Best =  parent1.genotype.get( parent1.fenotype.indexOf( Collections.min(parent1.fenotype)));
-            Vector<Integer> parent1Worst =  parent1.genotype.get( parent1.fenotype.indexOf( Collections.max(parent1.fenotype)));
-            Vector<Integer> parent2Best =  parent2.genotype.get( parent2.fenotype.indexOf( Collections.min(parent2.fenotype)));
-            Vector<Integer> parent2Worst =  parent2.genotype.get( parent2.fenotype.indexOf( Collections.max(parent2.fenotype)));
+                Vector<Integer> worst;
+                Vector<Integer> best;
 
-            Vector<Integer> worst;
-            Vector<Integer> best;
-
-            if( Collections.max(parent1.fenotype) >  Collections.max(parent2.fenotype)){
-                worst = parent1Worst;
-                best = parent2Best;
-                parent1.genotype.remove(worst);
-                parent2.genotype.remove(best);
-            }else{
-                worst = parent2Worst;
-                best = parent1Best;
-                parent2.genotype.remove(worst);
-                parent1.genotype.remove(best);
-            }
-            childrenUnit1.addChromosome(best);
-            childrenUnit2.addChromosome(best);
-
-            System.out.println("P1 " + parent1.genotype.size());
-            System.out.println("P2 " + parent2.genotype.size());
-            System.out.println("ch " + chromosomeSize);
-            for(int i =0; i < chromosomeSize -1; i++){
-                Vector<Vector<Integer>> result = new Vector<>();
-
-
-                switch (crossoverMethod){
-                    case PartiallyMappedCrossover -> result = partiallyMappedCrossover(parent1.genotype.get(i), parent2.genotype.get(i),
-                            crossoverPoint1, crossoverPoint2);
-                    case OrderCrossover -> result = orderCrossover(parent1.genotype.get(i), parent2.genotype.get(i),
-                            crossoverPoint1, crossoverPoint2);
+                if( Collections.max(parent1.fenotype) >  Collections.max(parent2.fenotype)){
+                    worst = parent1Worst;
+                    best = parent2Best;
+                    parent1.genotype.remove(parent1Worst);
+                    parent2.genotype.remove(parent2Best);
+                }else{
+                    worst = parent2Worst;
+                    best = parent1Best;
+                    parent2.genotype.remove(parent2Worst);
+                    parent1.genotype.remove(parent2Best);
                 }
+                childrenUnit1.addChromosome(best);
+                childrenUnit2.addChromosome(best);
 
-                childrenUnit1.addChromosome(result.get(0));
-                childrenUnit2.addChromosome(result.get(1));
+//            System.out.println("P1 " + parent1.genotype.size());
+//            System.out.println("P2 " + parent2.genotype.size());
+//            System.out.println("ch " + chromosomeSize);
+                if( Collections.max(parent1.fenotype) >  Collections.max(parent2.fenotype)){
+
+                    parent1.genotype.add(parent1Worst);
+                    parent2.genotype.add(parent2Best);
+                }else{
+                    parent2.genotype.add(parent2Worst);
+                    parent1.genotype.add(parent1Best);
+                }
             }
+            if(transcription){
+                for(int i =0; i < chromosomeSize-1; i++){
+                    Vector<Vector<Integer>> result = new Vector<>();
 
-            if( Collections.max(parent1.fenotype) >  Collections.max(parent2.fenotype)){
 
-                parent1.genotype.add(worst);
-                parent2.genotype.add(best);
-            }else{
-                parent2.genotype.add(worst);
-                parent1.genotype.add(best);
+                    switch (crossoverMethod){
+                        case PartiallyMappedCrossover -> result = partiallyMappedCrossover(parent1.genotype.get(i), parent2.genotype.get(i),
+                                crossoverPoint1, crossoverPoint2);
+                        case OrderCrossover -> result = orderCrossover(parent1.genotype.get(i), parent2.genotype.get(i),
+                                crossoverPoint1, crossoverPoint2);
+                    }
+
+                    childrenUnit1.addChromosome(result.get(0));
+                    childrenUnit2.addChromosome(result.get(1));
+                }
             }
+            else{
+                for(int i =0; i < chromosomeSize; i++){
+                    Vector<Vector<Integer>> result = new Vector<>();
 
+
+                    switch (crossoverMethod){
+                        case PartiallyMappedCrossover -> result = partiallyMappedCrossover(parent1.genotype.get(i), parent2.genotype.get(i),
+                                crossoverPoint1, crossoverPoint2);
+                        case OrderCrossover -> result = orderCrossover(parent1.genotype.get(i), parent2.genotype.get(i),
+                                crossoverPoint1, crossoverPoint2);
+                    }
+
+                    childrenUnit1.addChromosome(result.get(0));
+                    childrenUnit2.addChromosome(result.get(1));
+                }
+            }
             children.add(childrenUnit1);
             children.add(childrenUnit2);
         }else{
